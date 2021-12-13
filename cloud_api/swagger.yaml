@@ -1,0 +1,637 @@
+openapi: 3.0.0
+info:
+  description:
+    This is the API documentation for the Backend API in the context of the PhD - Marc Vila.
+  version: 1.0.0
+  title: Backend API
+tags:
+  - name: thing-types
+    description: Information of a ThingType. This is the type of the Thing, so it affects the Observation format.
+  - name: things
+    description: Information of a Thing. This is the metadata of a Thing.
+  - name: observations
+    description: Reading measurements from a Thing.
+  - name: context-awareness-rules
+    description: Context Awareness Rules for Things. Queries to be triggered automatically.
+  - name: locations
+    description: Location for Things.
+externalDocs:
+  description: Source code (GitHub - Private)
+  url: 'https://github.com/LaQuay/phd_deployment/tree/master/apis/cloud_api/'
+paths:
+  '/thing-types':
+    get:
+      tags:
+        - thing-types
+      summary: Get all the ThingTypes
+      description: ''
+      operationId: getAllThingTypes
+      responses:
+        '200':
+          description: 'Array containing thing_types objects'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ThingType'
+    post:
+      tags:
+        - thing-types
+      summary: Create a new ThingType
+      description: ''
+      operationId: addThingType
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: ThingType name exist
+        '422':
+          description: invalid ThingType
+      requestBody:
+        $ref: '#/components/requestBodies/ThingType'
+  '/thing-types/{thing_type_name}/':
+    get:
+      tags:
+        - thing-types
+      summary: Get a ThingType
+      description: ''
+      operationId: getThingType
+      parameters:
+        - in: path
+          name: thing_type_name
+          description: ThingType object queried
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Succesful operation - Returning ThingType object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingType'
+        '404':
+          description: ThingType name does not exist
+    put:
+      tags:
+        - thing-types
+      summary: Update a ThingType
+      description: ''
+      operationId: putThingType
+      parameters:
+        - in: path
+          name: thing_type_name
+          description: thing-type object to be modified
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+        '404':
+          description: thing_type_name does not exist
+        '422':
+          description: invalid ThingType
+      requestBody:
+        $ref: '#/components/requestBodies/ThingType'
+    delete:
+      tags:
+        - thing-types
+      summary: Delete a ThingType
+      description: 'Only if no Thing is this Type'
+      operationId: deleteThingType
+      parameters:
+        - in: path
+          name: thing_type_name
+          description: thing_type_name of the object to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: ThingType cannot be deleted, a Thing is using it
+        '404':
+          description: ThingTypeName does not exist
+  '/things':
+    get:
+      tags:
+        - things
+      summary: Get all the Things
+      description: ''
+      operationId: getAllThings
+      responses:
+        '200':
+          description: 'Array containing Things objects'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Thing'
+    post:
+      tags:
+        - things
+      summary: Create a new Thing
+      description: ''
+      operationId: addThing
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: thing_name exist
+        '422':
+          description: invalid Thing data
+      requestBody:
+        $ref: '#/components/requestBodies/Thing'
+  '/things/{thing_name}/':
+    get:
+      tags:
+        - things
+      summary: Get a Thing
+      description: ''
+      operationId: getThing
+      parameters:
+        - in: path
+          name: thing_name
+          description: thing_name of the object queried
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Succesful operation - Returning Thing object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Thing'
+        '404':
+          description: Thing does not exist
+    put:
+      tags:
+        - things
+      summary: Update a Thing
+      description: ''
+      operationId: putThing
+      parameters:
+        - in: path
+          name: thing_name
+          description: thing_name of the object to be modified
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+        '404':
+          description: ThingName does not exist
+        '422':
+          description: invalid Thing
+      requestBody:
+        $ref: '#/components/requestBodies/Thing'
+    delete:
+      tags:
+        - things
+      summary: Delete a Thing
+      description: 'If will also delete all the Observations of this Thing'
+      operationId: deleteThing
+      parameters:
+        - in: path
+          name: thing_name
+          description: thing_name of the object to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+        '404':
+          description: ThingName does not exist
+  '/things/{thing_name}/observations/':
+    get:
+      tags:
+        - things
+      summary: Get all the Observations of a Thing
+      description: ''
+      operationId: getAllThingObservations
+      parameters:
+        - in: path
+          name: thing_name
+          description: thing_name of the object queried
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Array containing Observation objects'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                    - $ref: '#/components/schemas/observation_a'
+                    - $ref: '#/components/schemas/observation_b'
+        '404':
+          description: ThingName does not exist
+  '/observations':
+    get:
+      tags:
+        - observations
+      summary: Get all the Observations
+      description: ''
+      operationId: getAllObservations
+      responses:
+        '200':
+          description: 'Array containing Observation objects'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                    - $ref: '#/components/schemas/observation_a'
+                    - $ref: '#/components/schemas/observation_b'
+    post:
+      tags:
+        - observations
+      summary: Create a new Observation
+      description: ''
+      operationId: addObservation
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: ObservationName exist
+        '422':
+          description: invalid Observation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                oneOf:
+                  - $ref: '#/components/schemas/observation_a'
+                  - $ref: '#/components/schemas/observation_b'
+  '/observations/{observation_name}/':
+    get:
+      tags:
+        - observations
+      summary: Get an Observation
+      description: ''
+      operationId: getObservation
+      parameters:
+        - in: path
+          name: observation_name
+          description: ObservationName of the object queried
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Succesful operation - Returning Observation object
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/observation_a'
+                  - $ref: '#/components/schemas/observation_b'
+        '404':
+          description: ObservationName does not exist
+    delete:
+      tags:
+        - observations
+      summary: Delete an Observation
+      description: ''
+      operationId: deleteObservation
+      parameters:
+        - in: path
+          name: observation_name
+          description: Observation object to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+        '404':
+          description: ObservationName does not exist
+  '/context-awareness-rules':
+    get:
+      tags:
+        - context-awareness-rules
+      summary: Get all the Context Awareness Rules
+      description: ''
+      operationId: getAllContextAwarenessRules
+      responses:
+        '200':
+          description: 'Array containing context_awareness_rule objects'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContextAwarenessRule'
+    post:
+      tags:
+        - context-awareness-rules
+      summary: Create a new ContextAwarenessRule
+      description: ''
+      operationId: addContextAwarenessRule
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: ContextAwarenessRuleName exist
+        '422':
+          description: invalid ContextAwarenessRule
+      requestBody:
+        $ref: '#/components/requestBodies/ContextAwarenessRule'
+  '/context-awareness-rules/{context_awareness_rule_name}/':
+    get:
+      tags:
+        - context-awareness-rules
+      summary: Get a ContextAwarenessRule
+      description: ''
+      operationId: getContextAwarenessRule
+      parameters:
+        - in: path
+          name: context_awareness_rule_name
+          description: ContextAwarenessRuleName of the object queried
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Succesful operation - Returning ContextAwarenessRule object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContextAwarenessRule'
+        '404':
+          description: ContextAwarenessRulename does not exist
+    put:
+      tags:
+        - context-awareness-rules
+      summary: Update a ContextAwarenessRule
+      description: ''
+      operationId: putContextAwarenessRule
+      parameters:
+        - in: path
+          name: context_awareness_rule_name
+          description: ContextAwarenessRuleName of the object to be modified
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+        '404':
+          description: Context does not exist
+        '422':
+          description: invalid ContextAwarenessRule data
+      requestBody:
+        $ref: '#/components/requestBodies/ContextAwarenessRule'
+    delete:
+      tags:
+        - context-awareness-rules
+      summary: Delete a ContextAwarenessRule
+      description: ''
+      operationId: deleteContextAwarenessRule
+      parameters:
+        - in: path
+          name: context_awareness_rule_name
+          description: ContextAwarenessRuleName of the object to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+        '404':
+          description: ContextAwarenessRuleName does not exist
+  '/locations':
+    get:
+      tags:
+        - locations
+      summary: Get all the Locations
+      description: ''
+      operationId: getLocations
+      responses:
+        '200':
+          description: 'Array containing location objects'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Location'
+    post:
+      tags:
+        - locations
+      summary: Create a new Location
+      description: ''
+      operationId: addLocation
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: LocationName exist
+        '422':
+          description: invalid Location data
+      requestBody:
+        $ref: '#/components/requestBodies/Location'
+  '/locations/{location_name}/':
+    get:
+      tags:
+        - locations
+      summary: Get a Location
+      description: ''
+      operationId: getLocation
+      parameters:
+        - in: path
+          name: location_name
+          description: LocationName of the object queried
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Succesful operation - Returning Location object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+        '404':
+          description: location_name does not exist
+    put:
+      tags:
+        - locations
+      summary: Update a Location
+      description: ''
+      operationId: putLocation
+      parameters:
+        - in: path
+          name: location_name
+          description: LocationName of the object to be modified
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+        '404':
+          description: LocationName does not exist
+        '422':
+          description: invalid Location data
+      requestBody:
+        $ref: '#/components/requestBodies/Location'
+    delete:
+      tags:
+        - locations
+      summary: Delete a Location
+      description: ''
+      operationId: deleteLocation
+      parameters:
+        - in: path
+          name: location_name
+          description: LocationName of the object to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+        '404':
+          description: LocationName does not exist
+servers:
+  - url: 'http://localhost:8000/api/'
+components:
+  requestBodies:
+    ThingType:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ThingType'
+      description: ThingType object
+      required: true
+    Thing:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Thing'
+      description: Thing object
+      required: true
+    Observation:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Observation'
+      description: Observation object
+      required: true
+    ContextAwarenessRule:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ContextAwarenessRule'
+      description: ContextAwarenessRule object
+      required: true
+    Location:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Location'
+      description: Location object
+      required: true
+  schemas:
+    ThingType:
+      type: object
+      required:
+        - name
+        - data_type
+      properties:
+        name:
+          type: string
+          example: "Inclinometer"
+        data_type:
+          type: string
+          example: "obs_a"
+      xml:
+        name: ThingType
+    Thing:
+      type: object
+      required:
+        - name
+        - type
+      properties:
+        name:
+          type: string
+          example: "ABC-1002"
+        type:
+          $ref: '#/components/schemas/ThingType/properties/name'
+        location:
+          $ref: '#/components/schemas/Location/properties/name'
+      xml:
+        name: Thing
+    Observation:
+      type: object
+      required:
+        - thing_name
+        - value
+        - time_start
+      properties:
+        thing_name:
+          $ref: '#/components/schemas/Thing/properties/name'
+        time_start:
+          type: string
+          format: date-time
+          example: "2020-03-13T19:17:12+00:00"
+    observation_a:
+      allOf:
+        - $ref: "#/components/schemas/Observation"
+        - type: object
+          properties:
+            value:
+              type: string
+              example: "0.1222"
+    observation_b:
+      allOf:
+        - $ref: "#/components/schemas/Observation"
+        - type: object
+          properties:
+            value:
+              type: number
+              example: 0.1222
+      xml:
+        name: Observation
+    ContextAwarenessRule:
+      type: object
+      required:
+        - name
+        - query
+      properties:
+        name:
+          type: string
+          example: "BR1"
+        query:
+          type: string
+          example: "SELECT * FROM EVENT WHERE thing_name = 'ABC-1001' AND value > 1"
+        executing:
+          type: boolean
+          example: true
+    Location:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: "MyLocation1"
+        latlng:
+          type: string
+          example: "41.2, 2.1"
+      xml:
+        name: Thing
