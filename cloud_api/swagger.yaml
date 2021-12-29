@@ -2,333 +2,142 @@ openapi: 3.0.0
 info:
   description:
     This is the API documentation for the Backend API in the context of the PhD - Marc Vila.
+    This Swagger file is currently work in progress.
   version: 1.0.0
   title: Backend API
 tags:
-  - name: thing-types
+  - name: actuatable-property
+    description: The properties of a FeatureOfInterest on which actions can be taken.
+  - name: actuations
+    description: The actions to be executed.
+  - name: actuator
+    description: The elements that execute Actuations that need to be taken of a given property (ActuatableProperty), in order to change the state of an element of the world.
+  - name: context-awareness-rule
+    description: The rules or conditions that define how the system acts.
+  - name: feature-of-interest
+    description: The elements, properties, or characteristics to be observed and manipulated.
+  - name: location
+    description: Geographical or labeled position for Things.
+  - name: observable-property
+    description: The properties of the FeatureOfInterest to be observed.
+  - name: observation
+    description: Measurement of a value by a Sensor for an ObservableProperty at a given instant of Time.
+  - name: platform
+    description: Subset of the elements that are being used to observe the world, elements that are monitored and eventually acted upon.
+  - name: sensor
+    description: Sensors are the elements capable of making raw measurements (Observations) of a given property (ObservableProperty).
+  - name: thing-type
     description: Information of a ThingType. This is the type of the Thing, so it affects the Observation format.
-  - name: things
+  - name: thing
     description: Information of a Thing. This is the metadata of a Thing.
-  - name: observations
-    description: Reading measurements from a Thing.
-  - name: context-awareness-rules
-    description: Context Awareness Rules for Things. Queries to be triggered automatically.
-  - name: locations
-    description: Location for Things.
 externalDocs:
   description: Source code (GitHub - Private)
   url: 'https://github.com/LaQuay/phd_deployment/tree/master/apis/cloud_api/'
 paths:
-  '/thing-types':
+  '/actuatable-properties':
     get:
       tags:
-        - thing-types
-      summary: Get all the ThingTypes
+        - actuatable-property
+      summary: Get all instances
       description: ''
-      operationId: getAllThingTypes
+      operationId: getActuatableProperties
       responses:
         '200':
-          description: 'Array containing thing_types objects'
+          description: 'Array containing instances'
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ThingType'
+                  $ref: '#/components/schemas/ActuatableProperty'
     post:
       tags:
-        - thing-types
-      summary: Create a new ThingType
+        - actuatable-property
+      summary: Create a new instance
       description: ''
-      operationId: addThingType
+      operationId: addActuatableProperty
       responses:
         '200':
-          description: successful operation
+          description: Successful operation
         '400':
-          description: ThingType name exist
+          description: Instance exist
         '422':
-          description: invalid ThingType
+          description: Invalid data content provided
       requestBody:
-        $ref: '#/components/requestBodies/ThingType'
-  '/thing-types/{thing_type_name}/':
+        $ref: '#/components/requestBodies/ActuatableProperty'
+  '/actuatable-properties/{actuatable_property_name}/':
     get:
       tags:
-        - thing-types
-      summary: Get a ThingType
+        - actuatable-property
+      summary: Get an instance
       description: ''
-      operationId: getThingType
+      operationId: getActuatableProperty
       parameters:
         - in: path
-          name: thing_type_name
-          description: ThingType object queried
+          name: actuatable_property_name
+          description: Name of the instance queried
           required: true
           schema:
             type: string
       responses:
         '200':
-          description: Succesful operation - Returning ThingType object
+          description: Succesful operation - Returning instance
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ThingType'
+                $ref: '#/components/schemas/ActuatableProperty'
         '404':
-          description: ThingType name does not exist
+          description: Instance with the provided Name does not exist
     put:
       tags:
-        - thing-types
-      summary: Update a ThingType
+        - actuatable-property
+      summary: Update an instance
       description: ''
-      operationId: putThingType
+      operationId: putActuatableProperty
       parameters:
         - in: path
-          name: thing_type_name
-          description: thing-type object to be modified
+          name: actuatable_property_name
+          description: Name of the instance to be modified
           required: true
           schema:
             type: string
       responses:
         '200':
-          description: successful operation
+          description: Successful operation
         '404':
-          description: thing_type_name does not exist
+          description: Instance with the provided Name does not exist
         '422':
-          description: invalid ThingType
+          description: Invalid data content provided
       requestBody:
-        $ref: '#/components/requestBodies/ThingType'
+        $ref: '#/components/requestBodies/ActuatableProperty'
     delete:
       tags:
-        - thing-types
-      summary: Delete a ThingType
-      description: 'Only if no Thing is this Type'
-      operationId: deleteThingType
+        - actuatable-property
+      summary: Delete an instance
+      description: ''
+      operationId: deleteActuatableProperty
       parameters:
         - in: path
-          name: thing_type_name
-          description: thing_type_name of the object to be deleted
+          name: actuatable_property_name
+          description: Name of the instance to be deleted
           required: true
           schema:
             type: string
       responses:
         '200':
-          description: successful operation
-        '400':
-          description: ThingType cannot be deleted, a Thing is using it
+          description: Successful operation
         '404':
-          description: ThingTypeName does not exist
-  '/things':
-    get:
-      tags:
-        - things
-      summary: Get all the Things
-      description: ''
-      operationId: getAllThings
-      responses:
-        '200':
-          description: 'Array containing Things objects'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Thing'
-    post:
-      tags:
-        - things
-      summary: Create a new Thing
-      description: ''
-      operationId: addThing
-      responses:
-        '200':
-          description: successful operation
-        '400':
-          description: thing_name exist
-        '422':
-          description: invalid Thing data
-      requestBody:
-        $ref: '#/components/requestBodies/Thing'
-  '/things/{thing_name}/':
-    get:
-      tags:
-        - things
-      summary: Get a Thing
-      description: ''
-      operationId: getThing
-      parameters:
-        - in: path
-          name: thing_name
-          description: thing_name of the object queried
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Succesful operation - Returning Thing object
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Thing'
-        '404':
-          description: Thing does not exist
-    put:
-      tags:
-        - things
-      summary: Update a Thing
-      description: ''
-      operationId: putThing
-      parameters:
-        - in: path
-          name: thing_name
-          description: thing_name of the object to be modified
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: successful operation
-        '404':
-          description: ThingName does not exist
-        '422':
-          description: invalid Thing
-      requestBody:
-        $ref: '#/components/requestBodies/Thing'
-    delete:
-      tags:
-        - things
-      summary: Delete a Thing
-      description: 'If will also delete all the Observations of this Thing'
-      operationId: deleteThing
-      parameters:
-        - in: path
-          name: thing_name
-          description: thing_name of the object to be deleted
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: successful operation
-        '404':
-          description: ThingName does not exist
-  '/things/{thing_name}/observations/':
-    get:
-      tags:
-        - things
-      summary: Get all the Observations of a Thing
-      description: ''
-      operationId: getAllThingObservations
-      parameters:
-        - in: path
-          name: thing_name
-          description: thing_name of the object queried
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: 'Array containing Observation objects'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  oneOf:
-                    - $ref: '#/components/schemas/observation_a'
-                    - $ref: '#/components/schemas/observation_b'
-        '404':
-          description: ThingName does not exist
-  '/observations':
-    get:
-      tags:
-        - observations
-      summary: Get all the Observations
-      description: ''
-      operationId: getAllObservations
-      responses:
-        '200':
-          description: 'Array containing Observation objects'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  oneOf:
-                    - $ref: '#/components/schemas/observation_a'
-                    - $ref: '#/components/schemas/observation_b'
-    post:
-      tags:
-        - observations
-      summary: Create a new Observation
-      description: ''
-      operationId: addObservation
-      responses:
-        '200':
-          description: successful operation
-        '400':
-          description: ObservationName exist
-        '422':
-          description: invalid Observation
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                oneOf:
-                  - $ref: '#/components/schemas/observation_a'
-                  - $ref: '#/components/schemas/observation_b'
-  '/observations/{observation_name}/':
-    get:
-      tags:
-        - observations
-      summary: Get an Observation
-      description: ''
-      operationId: getObservation
-      parameters:
-        - in: path
-          name: observation_name
-          description: ObservationName of the object queried
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Succesful operation - Returning Observation object
-          content:
-            application/json:
-              schema:
-                oneOf:
-                  - $ref: '#/components/schemas/observation_a'
-                  - $ref: '#/components/schemas/observation_b'
-        '404':
-          description: ObservationName does not exist
-    delete:
-      tags:
-        - observations
-      summary: Delete an Observation
-      description: ''
-      operationId: deleteObservation
-      parameters:
-        - in: path
-          name: observation_name
-          description: Observation object to be deleted
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: successful operation
-        '404':
-          description: ObservationName does not exist
+          description: Instance with the provided Name does not exist
   '/context-awareness-rules':
     get:
       tags:
-        - context-awareness-rules
-      summary: Get all the Context Awareness Rules
+        - context-awareness-rule
+      summary: Get all instances
       description: ''
-      operationId: getAllContextAwarenessRules
+      operationId: getContextAwarenessRules
       responses:
         '200':
-          description: 'Array containing context_awareness_rule objects'
+          description: 'Array containing instances'
           content:
             application/json:
               schema:
@@ -337,92 +146,92 @@ paths:
                   $ref: '#/components/schemas/ContextAwarenessRule'
     post:
       tags:
-        - context-awareness-rules
-      summary: Create a new ContextAwarenessRule
+        - context-awareness-rule
+      summary: Create a new instance
       description: ''
       operationId: addContextAwarenessRule
       responses:
         '200':
-          description: successful operation
+          description: Successful operation
         '400':
-          description: ContextAwarenessRuleName exist
+          description: Instance with the provided Name does already exist
         '422':
-          description: invalid ContextAwarenessRule
+          description: Invalid data content provided
       requestBody:
         $ref: '#/components/requestBodies/ContextAwarenessRule'
   '/context-awareness-rules/{context_awareness_rule_name}/':
     get:
       tags:
-        - context-awareness-rules
-      summary: Get a ContextAwarenessRule
+        - context-awareness-rule
+      summary: Get an instance
       description: ''
       operationId: getContextAwarenessRule
       parameters:
         - in: path
           name: context_awareness_rule_name
-          description: ContextAwarenessRuleName of the object queried
+          description: Name of the instance queried
           required: true
           schema:
             type: string
       responses:
         '200':
-          description: Succesful operation - Returning ContextAwarenessRule object
+          description: Succesful operation - Returning instance
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ContextAwarenessRule'
         '404':
-          description: ContextAwarenessRulename does not exist
+          description: Instance with the provided Name does not exist
     put:
       tags:
-        - context-awareness-rules
-      summary: Update a ContextAwarenessRule
+        - context-awareness-rule
+      summary: Update an instance
       description: ''
       operationId: putContextAwarenessRule
       parameters:
         - in: path
           name: context_awareness_rule_name
-          description: ContextAwarenessRuleName of the object to be modified
+          description: Name of the instance to be modified
           required: true
           schema:
             type: string
       responses:
         '200':
-          description: successful operation
+          description: Successful operation
         '404':
-          description: Context does not exist
+          description: Instance with the provided Name does not exist
         '422':
-          description: invalid ContextAwarenessRule data
+          description: Invalid data content provided
       requestBody:
         $ref: '#/components/requestBodies/ContextAwarenessRule'
     delete:
       tags:
-        - context-awareness-rules
-      summary: Delete a ContextAwarenessRule
+        - context-awareness-rule
+      summary: Delete an instance
       description: ''
       operationId: deleteContextAwarenessRule
       parameters:
         - in: path
           name: context_awareness_rule_name
-          description: ContextAwarenessRuleName of the object to be deleted
+          description: Name of the instance to be deleted
           required: true
           schema:
             type: string
       responses:
         '200':
-          description: successful operation
+          description: Successful operation
         '404':
-          description: ContextAwarenessRuleName does not exist
+          description: Instance with the provided Name does not exist
   '/locations':
     get:
       tags:
-        - locations
-      summary: Get all the Locations
+        - location
+      summary: Get all the instances
       description: ''
       operationId: getLocations
       responses:
         '200':
-          description: 'Array containing location objects'
+          description: 'Array containing instances'
           content:
             application/json:
               schema:
@@ -431,36 +240,36 @@ paths:
                   $ref: '#/components/schemas/Location'
     post:
       tags:
-        - locations
-      summary: Create a new Location
+        - location
+      summary: Create a new instance
       description: ''
       operationId: addLocation
       responses:
         '200':
-          description: successful operation
+          description: Successful operation
         '400':
-          description: LocationName exist
+          description: Instance with the provided Name does already exist
         '422':
-          description: invalid Location data
+          description: Invalid data content provided
       requestBody:
         $ref: '#/components/requestBodies/Location'
   '/locations/{location_name}/':
     get:
       tags:
-        - locations
-      summary: Get a Location
+        - location
+      summary: Get an instance
       description: ''
       operationId: getLocation
       parameters:
         - in: path
           name: location_name
-          description: LocationName of the object queried
+          description: Name of the instance queried
           required: true
           schema:
             type: string
       responses:
         '200':
-          description: Succesful operation - Returning Location object
+          description: Succesful operation - Returning instance
           content:
             application/json:
               schema:
@@ -469,159 +278,477 @@ paths:
           description: location_name does not exist
     put:
       tags:
-        - locations
-      summary: Update a Location
+        - location
+      summary: Update an instance
       description: ''
       operationId: putLocation
       parameters:
         - in: path
           name: location_name
-          description: LocationName of the object to be modified
+          description: Name of the instance to be modified
           required: true
           schema:
             type: string
       responses:
         '200':
-          description: successful operation
+          description: Successful operation
         '404':
-          description: LocationName does not exist
+          description: Instance with the provided Name does already exist
         '422':
-          description: invalid Location data
+          description: Invalid data content provided
       requestBody:
         $ref: '#/components/requestBodies/Location'
     delete:
       tags:
-        - locations
-      summary: Delete a Location
+        - location
+      summary: Delete an instance
       description: ''
       operationId: deleteLocation
       parameters:
         - in: path
           name: location_name
-          description: LocationName of the object to be deleted
+          description: Name of the instance to be deleted
           required: true
           schema:
             type: string
       responses:
         '200':
-          description: successful operation
+          description: Successful operation
         '404':
-          description: LocationName does not exist
+          description: Instance with the provided Name does not exist
+  '/observations':
+    get:
+      tags:
+        - observation
+      summary: Get all the instances
+      description: ''
+      operationId: getObservations
+      responses:
+        '200':
+          description: 'Array containing instances'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Observation'
+    post:
+      tags:
+        - observation
+      summary: Create a new instance
+      description: ''
+      operationId: addObservation
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Instance with the provided information does already exist
+        '422':
+          description: Invalid data content provided
+      requestBody:
+        $ref: '#/components/requestBodies/Observation'
+  '/observations/{observation_id}/':
+    get:
+      tags:
+        - observation
+      summary: Get an instance
+      description: ''
+      operationId: getObservation
+      parameters:
+        - in: path
+          name: observation_id
+          description: ID of the instance queried
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Succesful operation - Returning instance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Observation'
+        '404':
+          description: Instance with the provided ID does not exist
+    delete:
+      tags:
+        - observation
+      summary: Delete an instance
+      description: ''
+      operationId: deleteObservation
+      parameters:
+        - in: path
+          name: observation_id
+          description: ID of the instance to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Instance with the provided ID does not exist
+  '/thing-types':
+    get:
+      tags:
+        - thing-type
+      summary: Get all the instances
+      description: ''
+      operationId: getThingTypes
+      responses:
+        '200':
+          description: 'Array containing instances'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ThingType'
+    post:
+      tags:
+        - thing-type
+      summary: Create a new instance
+      description: ''
+      operationId: addThingType
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Instance with the provided Name does already exist
+        '422':
+          description: Invalid data content provided
+      requestBody:
+        $ref: '#/components/requestBodies/ThingType'
+  '/thing-types/{thing_type_name}/':
+    get:
+      tags:
+        - thing-type
+      summary: Get an instance
+      description: ''
+      operationId: getThingType
+      parameters:
+        - in: path
+          name: thing_type_name
+          description: Name of the instance queried
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Succesful operation - Returning instance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingType'
+        '404':
+          description: Instance with the provided Name does not exist
+    put:
+      tags:
+        - thing-type
+      summary: Update an instance
+      description: ''
+      operationId: putThingType
+      parameters:
+        - in: path
+          name: thing_type_name
+          description: Name of the instance queried
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Instance with the provided Name does not exist
+        '422':
+          description: Invalid data content provided
+      requestBody:
+        $ref: '#/components/requestBodies/ThingType'
+    delete:
+      tags:
+        - thing-type
+      summary: Delete an instance
+      description: 'Only if no Thing is of this Type'
+      operationId: deleteThingType
+      parameters:
+        - in: path
+          name: thing_type_name
+          description: Name of the instance queried
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Instance cannot be deleted, a Thing is using it
+        '404':
+          description: Instance with the provided Name does not exist
+  '/things':
+    get:
+      tags:
+        - thing
+      summary: Get all the instances
+      description: ''
+      operationId: getThings
+      responses:
+        '200':
+          description: 'Array containing instances'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Thing'
+    post:
+      tags:
+        - thing
+      summary: Create a new instance
+      description: ''
+      operationId: addThing
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Instance with the provided Name does already exist
+        '422':
+          description: Invalid data content provided
+      requestBody:
+        $ref: '#/components/requestBodies/Thing'
+  '/things/{thing_name}/':
+    get:
+      tags:
+        - thing
+      summary: Get an instance
+      description: ''
+      operationId: getThing
+      parameters:
+        - in: path
+          name: thing_name
+          description: Name of the instance queried
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Succesful operation - Returning instance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Thing'
+        '404':
+          description: Instance with the provided Name does not exist
+    put:
+      tags:
+        - thing
+      summary: Update an instance
+      description: ''
+      operationId: putThing
+      parameters:
+        - in: path
+          name: thing_name
+          description: Name of the instance to be modified
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Instance with the provided Name does not exist
+        '422':
+          description: Invalid data content provided
+      requestBody:
+        $ref: '#/components/requestBodies/Thing'
+    delete:
+      tags:
+        - thing
+      summary: Delete an instance
+      description: ''
+      operationId: deleteThing
+      parameters:
+        - in: path
+          name: thing_name
+          description: Name of the instance to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Instance with the provided Name does not exist
+  '/sensors/{sensor_name}/observations/':
+    get:
+      tags:
+        - sensor
+      summary: Get all the Observations of a Sensor
+      description: ''
+      operationId: getSensorObservations
+      parameters:
+        - in: path
+          name: sensor_name
+          description: Name of the instance queried
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Array containing instances'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Observation'
+        '404':
+          description: Instance with the provided Name does not exist
 servers:
   - url: 'http://localhost:8000/api/'
 components:
   requestBodies:
-    ThingType:
+    ActuatableProperty:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ThingType'
-      description: ThingType object
-      required: true
-    Thing:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Thing'
-      description: Thing object
-      required: true
-    Observation:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Observation'
-      description: Observation object
+            $ref: '#/components/schemas/ActuatableProperty'
+      description: ''
       required: true
     ContextAwarenessRule:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ContextAwarenessRule'
-      description: ContextAwarenessRule object
+      description: ''
       required: true
     Location:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Location'
-      description: Location object
+      description: ''
+      required: true
+    Observation:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Observation'
+      description: ''
+      required: true
+    ThingType:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ThingType'
+      description: ''
+      required: true
+    Thing:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Thing'
+      description: ''
       required: true
   schemas:
-    ThingType:
+    ActuatableProperty:
       type: object
       required:
         - name
-        - data_type
+        - feature_of_interest_name
       properties:
         name:
           type: string
-          example: "Inclinometer"
-        data_type:
-          type: string
-          example: "obs_a"
-      xml:
-        name: ThingType
-    Thing:
+          example: "ActuatablePropertyA"
+        feature_of_interest_name:
+          $ref: '#/components/schemas/FeatureOfInterest/properties/name'
+    Actuation:
       type: object
       required:
-        - name
-        - type
-      properties:
-        name:
-          type: string
-          example: "ABC-1002"
-        type:
-          $ref: '#/components/schemas/ThingType/properties/name'
-        location:
-          $ref: '#/components/schemas/Location/properties/name'
-      xml:
-        name: Thing
-    Observation:
-      type: object
-      required:
-        - thing_name
-        - value
+        - observation_id
+        - context_awareness_rule_name
         - time_start
       properties:
-        thing_name:
-          $ref: '#/components/schemas/Thing/properties/name'
+        observation_id:
+          type: string
+          example: "ID1"
+        context_awareness_rule_name:
+          $ref: '#/components/schemas/ContextAwarenessRule/properties/name'
         time_start:
           type: string
           format: date-time
-          example: "2020-03-13T19:17:12+00:00"
-    observation_a:
-      allOf:
-        - $ref: "#/components/schemas/Observation"
-        - type: object
-          properties:
-            value:
-              type: string
-              example: "0.1222"
-    observation_b:
-      allOf:
-        - $ref: "#/components/schemas/Observation"
-        - type: object
-          properties:
-            value:
-              type: number
-              example: 0.1222
-      xml:
-        name: Observation
+          example: "2021-12-13T19:17:12+00:00"
+        time_end:
+          type: string
+          format: date-time
+          example: "2021-12-13T19:17:13+00:00"
+    Actuator:
+      type: object
+      required:
+        - name
+        - thing_name
+        - actuatable_property_name
+      properties:
+        name:
+          type: string
+          example: "Actuator1"
+        thing_name:
+          $ref: '#/components/schemas/Thing/properties/name'
+        actuatable_property_name:
+          $ref: '#/components/schemas/ActuatableProperty/properties/name'
+        location_name:
+          $ref: '#/components/schemas/Location/properties/name'
     ContextAwarenessRule:
       type: object
       required:
         - name
-        - query
+        - sensor_observed_name
+        - operation_type
       properties:
         name:
           type: string
-          example: "BR1"
-        query:
+          example: "Rule1"
+        sensor_observed_name:
           type: string
-          example: "SELECT * FROM EVENT WHERE thing_name = 'ABC-1001' AND value > 1"
+          example: "SensorA"
+        operation_type:
+          type: string
+          enum:
+            - NOT_EQUAL
+            - EQUAL
+            - LESS_THAN
+            - MORE_THAN
         executing:
           type: boolean
           example: true
+        priority:
+          type: boolean
+          example: false
+        value_to_compare_boolean:
+          type: boolean
+          example: false
+          description: Only taken into account if the Sensor is reading a BOOLEAN.
+        value_to_compare_string:
+          type: string
+          example: "OK"
+          description: Only taken into account if the Sensor is reading a STRING.
+        value_to_compare_integer:
+          type: integer
+          example: 288
+          description: Only taken into account if the Sensor is reading a INTEGER.
+        value_to_compare_float:
+          type: number
+          example: 2.88
+          description: Only taken into account if the Sensor is reading a FLOAT.
+    FeatureOfInterest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: "FeatureOfInterestA"
+        location_name:
+          $ref: '#/components/schemas/Location/properties/name'
     Location:
       type: object
       required:
@@ -633,5 +760,88 @@ components:
         latlng:
           type: string
           example: "41.2, 2.1"
-      xml:
-        name: Thing
+    ObservableProperty:
+      type: object
+      required:
+        - name
+        - value_type_to_measure
+        - feature_of_interest_name
+      properties:
+        name:
+          type: string
+          example: "ObservablePropertyA"
+        value_type_to_measure:
+          type: string
+          enum:
+            - BOOLEAN
+            - STRING
+            - INTEGER
+            - FLOAT
+        feature_of_interest_name:
+          $ref: '#/components/schemas/FeatureOfInterest/properties/name'
+    Observation:
+      type: object
+      required:
+        - sensor_name
+        - time_start
+        - value
+      properties:
+        sensor_name:
+          $ref: '#/components/schemas/Sensor/properties/name'
+        time_start:
+          type: string
+          format: date-time
+          example: "2021-12-13T19:17:12+00:00"
+        time_end:
+          type: string
+          format: date-time
+          example: "2021-12-13T19:17:13+00:00"
+        value:
+          type: string
+          description: This will be either a BOOLEAN, STRING, INTEGER, or FLOAT. Depending on the Sensor type.
+    Platform:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: "Platform_9_3/4"
+        location_name:
+          $ref: '#/components/schemas/Location/properties/name'
+    Sensor:
+      type: object
+      required:
+        - name
+        - thing_name
+      properties:
+        name:
+          type: string
+          example: "Platform_9_3/4"
+        thing_name:
+          $ref: '#/components/schemas/Thing/properties/name'
+        observable_property_name:
+          $ref: '#/components/schemas/ObservableProperty/properties/name'
+        location_name:
+          $ref: '#/components/schemas/Location/properties/name'
+    Thing:
+      type: object
+      required:
+        - name
+        - type_name
+      properties:
+        name:
+          type: string
+          example: "ThingA"
+        type_name:
+          $ref: '#/components/schemas/ThingType/properties/name'
+        location_name:
+          $ref: '#/components/schemas/Location/properties/name'
+    ThingType:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: "ThingTypeA"
