@@ -8,7 +8,7 @@ info:
 tags:
   - name: actuatable-property
     description: The properties of a FeatureOfInterest on which actions can be taken.
-  - name: actuations
+  - name: actuation
     description: The actions to be executed.
   - name: actuator
     description: The elements that execute Actuations that need to be taken of a given property (ActuatableProperty), in order to change the state of an element of the world.
@@ -128,6 +128,172 @@ paths:
           description: Successful operation
         '404':
           description: Instance with the provided Name does not exist
+  '/actuations':
+    get:
+      tags:
+        - actuation
+      summary: Get all the instances
+      description: ''
+      operationId: getActuations
+      responses:
+        '200':
+          description: 'Array containing instances'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Actuation'
+    post:
+      tags:
+        - actuation
+      summary: Create a new instance
+      description: ''
+      operationId: addActuation
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Instance with the provided information does already exist
+        '422':
+          description: Invalid data content provided
+      requestBody:
+        $ref: '#/components/requestBodies/Actuation'
+  '/actuations/{actuation_id}/':
+    get:
+      tags:
+        - actuation
+      summary: Get an instance
+      description: ''
+      operationId: getActuation
+      parameters:
+        - in: path
+          name: actuation_id
+          description: ID of the instance queried
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Succesful operation - Returning instance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Actuation'
+        '404':
+          description: Instance with the provided ID does not exist
+    delete:
+      tags:
+        - actuation
+      summary: Delete an instance
+      description: ''
+      operationId: deleteActuation
+      parameters:
+        - in: path
+          name: actuation_id
+          description: ID of the instance to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Instance with the provided ID does not exist
+  '/actuators':
+    get:
+      tags:
+        - actuator
+      summary: Get all the instances
+      description: ''
+      operationId: getActuators
+      responses:
+        '200':
+          description: 'Array containing instances'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Actuator'
+    post:
+      tags:
+        - actuator
+      summary: Create a new instance
+      description: ''
+      operationId: addActuator
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Instance with the provided Name does already exist
+        '422':
+          description: Invalid data content provided
+      requestBody:
+        $ref: '#/components/requestBodies/Actuator'
+  '/actuators/{actuator_name}/':
+    get:
+      tags:
+        - actuator
+      summary: Get an instance
+      description: ''
+      operationId: getActuator
+      parameters:
+        - in: path
+          name: actuator_name
+          description: Name of the instance queried
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Succesful operation - Returning instance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Actuator'
+        '404':
+          description: Instance with the provided Name does not exist
+    put:
+      tags:
+        - actuator
+      summary: Update an instance
+      description: ''
+      operationId: putActuator
+      parameters:
+        - in: path
+          name: actuator_name
+          description: Name of the instance to be modified
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Instance with the provided Name does already exist
+        '422':
+          description: Invalid data content provided
+      requestBody:
+        $ref: '#/components/requestBodies/Actuator'
+    delete:
+      tags:
+        - actuator
+      summary: Delete an instance
+      description: ''
+      operationId: deleteActuator
+      parameters:
+        - in: path
+          name: actuator_name
+          description: Name of the instance to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Instance with the provided Name does not exist
   '/context-awareness-rules':
     get:
       tags:
@@ -222,6 +388,100 @@ paths:
           description: Successful operation
         '404':
           description: Instance with the provided Name does not exist
+  '/features-of-interest':
+    get:
+      tags:
+        - feature-of-interest
+      summary: Get all the instances
+      description: ''
+      operationId: getFeaturesOfInterest
+      responses:
+        '200':
+          description: 'Array containing instances'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FeatureOfInterest'
+    post:
+      tags:
+        - feature-of-interest
+      summary: Create a new instance
+      description: ''
+      operationId: addFeatureOfInterest
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Instance with the provided Name does already exist
+        '422':
+          description: Invalid data content provided
+      requestBody:
+        $ref: '#/components/requestBodies/FeatureOfInterest'
+  '/features-of-interest/{feature_of_interest_name}/':
+    get:
+      tags:
+        - feature-of-interest
+      summary: Get an instance
+      description: ''
+      operationId: getFeatureOfInterest
+      parameters:
+        - in: path
+          name: feature_of_interest_name
+          description: Name of the instance queried
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Succesful operation - Returning instance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureOfInterest'
+        '404':
+          description: Instance with the provided Name does not exist
+    put:
+      tags:
+        - feature-of-interest
+      summary: Update an instance
+      description: ''
+      operationId: putFeatureOfInterest
+      parameters:
+        - in: path
+          name: feature_of_interest_name
+          description: Name of the instance to be modified
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Instance with the provided Name does already exist
+        '422':
+          description: Invalid data content provided
+      requestBody:
+        $ref: '#/components/requestBodies/FeatureOfInterest'
+    delete:
+      tags:
+        - feature-of-interest
+      summary: Delete an instance
+      description: ''
+      operationId: deleteFeatureOfInterest
+      parameters:
+        - in: path
+          name: feature_of_interest_name
+          description: Name of the instance to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Instance with the provided Name does not exist
   '/locations':
     get:
       tags:
@@ -275,7 +535,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Location'
         '404':
-          description: location_name does not exist
+          description: Instance with the provided Name does not exist
     put:
       tags:
         - location
@@ -316,6 +576,100 @@ paths:
           description: Successful operation
         '404':
           description: Instance with the provided Name does not exist
+  '/observable-properties':
+    get:
+      tags:
+        - observable-property
+      summary: Get all the instances
+      description: ''
+      operationId: getObservableProperties
+      responses:
+        '200':
+          description: 'Array containing instances'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ObservableProperty'
+    post:
+      tags:
+        - observable-property
+      summary: Create a new instance
+      description: ''
+      operationId: addObservableProperty
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Instance with the provided Name does already exist
+        '422':
+          description: Invalid data content provided
+      requestBody:
+        $ref: '#/components/requestBodies/ObservableProperty'
+  '/observable-properties/{observable_property_name}/':
+    get:
+      tags:
+        - observable-property
+      summary: Get an instance
+      description: ''
+      operationId: getObservableProperty
+      parameters:
+        - in: path
+          name: observable_property_name
+          description: Name of the instance queried
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Succesful operation - Returning instance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObservableProperty'
+        '404':
+          description: Instance with the provided Name does not exist
+    put:
+      tags:
+        - observable-property
+      summary: Update an instance
+      description: ''
+      operationId: putObservableProperty
+      parameters:
+        - in: path
+          name: observable_property_name
+          description: Name of the instance to be modified
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Instance with the provided Name does already exist
+        '422':
+          description: Invalid data content provided
+      requestBody:
+        $ref: '#/components/requestBodies/ObservableProperty'
+    delete:
+      tags:
+        - observable-property
+      summary: Delete an instance
+      description: ''
+      operationId: deleteObservableProperty
+      parameters:
+        - in: path
+          name: observable_property_name
+          description: Name of the instance to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Instance with the provided Name does not exist
   '/observations':
     get:
       tags:
@@ -343,6 +697,8 @@ paths:
           description: Successful operation
         '400':
           description: Instance with the provided information does already exist
+        '404':
+          description: Instance does not have an existing Sensor
         '422':
           description: Invalid data content provided
       requestBody:
@@ -388,13 +744,13 @@ paths:
           description: Successful operation
         '404':
           description: Instance with the provided ID does not exist
-  '/thing-types':
+  '/platforms':
     get:
       tags:
-        - thing-type
+        - platform
       summary: Get all the instances
       description: ''
-      operationId: getThingTypes
+      operationId: getPlatforms
       responses:
         '200':
           description: 'Array containing instances'
@@ -403,13 +759,13 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ThingType'
+                  $ref: '#/components/schemas/Platform'
     post:
       tags:
-        - thing-type
+        - platform
       summary: Create a new instance
       description: ''
-      operationId: addThingType
+      operationId: addPlatform
       responses:
         '200':
           description: Successful operation
@@ -418,17 +774,17 @@ paths:
         '422':
           description: Invalid data content provided
       requestBody:
-        $ref: '#/components/requestBodies/ThingType'
-  '/thing-types/{thing_type_name}/':
+        $ref: '#/components/requestBodies/Platform'
+  '/platforms/{platform_name}/':
     get:
       tags:
-        - thing-type
+        - platform
       summary: Get an instance
       description: ''
-      operationId: getThingType
+      operationId: getPlatform
       parameters:
         - in: path
-          name: thing_type_name
+          name: platform_name
           description: Name of the instance queried
           required: true
           schema:
@@ -439,19 +795,41 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ThingType'
+                $ref: '#/components/schemas/Platform'
         '404':
           description: Instance with the provided Name does not exist
     put:
       tags:
-        - thing-type
+        - platform
       summary: Update an instance
       description: ''
-      operationId: putThingType
+      operationId: putPlatform
       parameters:
         - in: path
-          name: thing_type_name
-          description: Name of the instance queried
+          name: platform_name
+          description: Name of the instance to be modified
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Instance with the provided Name does already exist
+        '422':
+          description: Invalid data content provided
+      requestBody:
+        $ref: '#/components/requestBodies/Platform'
+    delete:
+      tags:
+        - platform
+      summary: Delete an instance
+      description: ''
+      operationId: deletePlatform
+      parameters:
+        - in: path
+          name: platform_name
+          description: Name of the instance to be deleted
           required: true
           schema:
             type: string
@@ -460,28 +838,123 @@ paths:
           description: Successful operation
         '404':
           description: Instance with the provided Name does not exist
+  '/sensors':
+    get:
+      tags:
+        - sensor
+      summary: Get all the instances
+      description: ''
+      operationId: getSensors
+      responses:
+        '200':
+          description: 'Array containing instances'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sensor'
+    post:
+      tags:
+        - sensor
+      summary: Create a new instance
+      description: ''
+      operationId: addSensor
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Instance with the provided Name does already exist
         '422':
           description: Invalid data content provided
       requestBody:
-        $ref: '#/components/requestBodies/ThingType'
-    delete:
+        $ref: '#/components/requestBodies/Sensor'
+  '/sensors/{sensor_name}/':
+    get:
       tags:
-        - thing-type
-      summary: Delete an instance
-      description: 'Only if no Thing is of this Type'
-      operationId: deleteThingType
+        - sensor
+      summary: Get an instance
+      description: ''
+      operationId: getSensor
       parameters:
         - in: path
-          name: thing_type_name
+          name: sensor_name
           description: Name of the instance queried
           required: true
           schema:
             type: string
       responses:
         '200':
+          description: Succesful operation - Returning instance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sensor'
+        '404':
+          description: Instance with the provided Name does not exist
+    put:
+      tags:
+        - sensor
+      summary: Update an instance
+      description: ''
+      operationId: putSensor
+      parameters:
+        - in: path
+          name: sensor_name
+          description: Name of the instance to be modified
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
           description: Successful operation
-        '400':
-          description: Instance cannot be deleted, a Thing is using it
+        '404':
+          description: Instance with the provided Name does already exist
+        '422':
+          description: Invalid data content provided
+      requestBody:
+        $ref: '#/components/requestBodies/Sensor'
+    delete:
+      tags:
+        - sensor
+      summary: Delete an instance
+      description: ''
+      operationId: deleteSensor
+      parameters:
+        - in: path
+          name: sensor_name
+          description: Name of the instance to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Instance with the provided Name does not exist
+  '/sensors/{sensor_name}/observations/':
+    get:
+      tags:
+        - sensor
+      summary: Get all the Observations of a Sensor
+      description: ''
+      operationId: getSensorObservations
+      parameters:
+        - in: path
+          name: sensor_name
+          description: Name of the instance queried
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Array containing instances'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Observation'
         '404':
           description: Instance with the provided Name does not exist
   '/things':
@@ -578,20 +1051,13 @@ paths:
           description: Successful operation
         '404':
           description: Instance with the provided Name does not exist
-  '/sensors/{sensor_name}/observations/':
+  '/thing-types':
     get:
       tags:
-        - sensor
-      summary: Get all the Observations of a Sensor
+        - thing-type
+      summary: Get all the instances
       description: ''
-      operationId: getSensorObservations
-      parameters:
-        - in: path
-          name: sensor_name
-          description: Name of the instance queried
-          required: true
-          schema:
-            type: string
+      operationId: getThingTypes
       responses:
         '200':
           description: 'Array containing instances'
@@ -600,11 +1066,92 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Observation'
+                  $ref: '#/components/schemas/ThingType'
+    post:
+      tags:
+        - thing-type
+      summary: Create a new instance
+      description: ''
+      operationId: addThingType
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Instance with the provided Name does already exist
+        '422':
+          description: Invalid data content provided
+      requestBody:
+        $ref: '#/components/requestBodies/ThingType'
+  '/thing-types/{thing_type_name}/':
+    get:
+      tags:
+        - thing-type
+      summary: Get an instance
+      description: ''
+      operationId: getThingType
+      parameters:
+        - in: path
+          name: thing_type_name
+          description: Name of the instance queried
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Succesful operation - Returning instance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingType'
+        '404':
+          description: Instance with the provided Name does not exist
+    put:
+      tags:
+        - thing-type
+      summary: Update an instance
+      description: ''
+      operationId: putThingType
+      parameters:
+        - in: path
+          name: thing_type_name
+          description: Name of the instance queried
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Instance with the provided Name does not exist
+        '422':
+          description: Invalid data content provided
+      requestBody:
+        $ref: '#/components/requestBodies/ThingType'
+    delete:
+      tags:
+        - thing-type
+      summary: Delete an instance
+      description: 'Only if no Thing is of this Type'
+      operationId: deleteThingType
+      parameters:
+        - in: path
+          name: thing_type_name
+          description: Name of the instance queried
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Instance cannot be deleted, a Thing is using it
         '404':
           description: Instance with the provided Name does not exist
 servers:
-  - url: 'http://localhost:8000/api/'
+  - url: http://localhost:5001/
+    description: Standalone server
+  - url: http://localhost:8000/api/
+    description: Production server
 components:
   requestBodies:
     ActuatableProperty:
@@ -614,11 +1161,32 @@ components:
             $ref: '#/components/schemas/ActuatableProperty'
       description: ''
       required: true
+    Actuation:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Actuation'
+      description: ''
+      required: true
+    Actuator:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Actuator'
+      description: ''
+      required: true
     ContextAwarenessRule:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ContextAwarenessRule'
+      description: ''
+      required: true
+    FeatureOfInterest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FeatureOfInterest'
       description: ''
       required: true
     Location:
@@ -628,11 +1196,32 @@ components:
             $ref: '#/components/schemas/Location'
       description: ''
       required: true
+    ObservableProperty:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ObservableProperty'
+      description: ''
+      required: true
     Observation:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Observation'
+      description: ''
+      required: true
+    Sensor:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Sensor'
+      description: ''
+      required: true
+    Platform:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Platform'
       description: ''
       required: true
     ThingType:

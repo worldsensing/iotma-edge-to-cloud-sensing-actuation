@@ -20,4 +20,4 @@ run-tests: build
 	docker-compose -f docker-compose.test.yml -p phd_deployment_test up --build backend_demo_api_test
 
 setup-tests: build
-	docker-compose -f docker-compose.test.yml -p phd_deployment_test up postgres
+	docker-compose -f docker-compose.test.yml -p phd_deployment_test up -d postgres

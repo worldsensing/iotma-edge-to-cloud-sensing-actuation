@@ -13,8 +13,17 @@ A `Swagger` file and a `jsonschema` file are also provided for this project, in 
 
 ### Run project
 
-Execute in terminal `make run`. Code is available at `http:\\localhost:5001`.
+Execute in terminal
+
+- `sh setup_db.sh`
+- `make run`
+
+Code is then available at `http:\\localhost:5001`.
 
 ### Run tests
 
-Execute in terminal `make run-tests`.
+Execute in terminal:
+
+- `sh setup_db_test.sh`
+- `make setup-tests`
+- `make run-tests`
