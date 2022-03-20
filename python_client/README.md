@@ -49,6 +49,7 @@ LED lights are configured in the project, mainly for use as information to check
 
 ```bash
 $ sudo apt-get install libffi-dev
+$ sudo apt --fix-broken install
 $ cd /home/pi/Dexter/lib/Dexter/RFR_Tools/miscellaneous/
 $ sudo python3 setup.py install
 ```
