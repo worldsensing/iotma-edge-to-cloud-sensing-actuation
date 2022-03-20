@@ -48,8 +48,8 @@ LED lights are configured in the project, mainly for use as information to check
 - `ImportError: No module named 'di_i2c'`
 
 ```bash
-$ sudo apt-get install libffi-dev
 $ sudo apt --fix-broken install
+$ sudo apt-get install libffi-dev
 $ cd /home/pi/Dexter/lib/Dexter/RFR_Tools/miscellaneous/
 $ sudo python3 setup.py install
 ```
