@@ -3,7 +3,7 @@ version: '3.7'
 services:
   # Backend
   backend_demo_api:
-    image: ${DOCKER_NAME_FULL}
+    image: phd/cloud_api:1.0.0-RC1
     env_file:
       - ENV/api.env
     environment:

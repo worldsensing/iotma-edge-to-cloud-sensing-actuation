@@ -3,8 +3,6 @@ VERSION=1.0.0-RC1
 DOCKER_NAME=phd/$(NAME)
 DOCKER_NAME_FULL=$(DOCKER_NAME):$(VERSION)
 
-.EXPORT_ALL_VARIABLES:
-
 clean:
 	@find . -iname "*~" | xargs rm 2>/dev/null || true
 	@find . -iname "*.pyc" | xargs rm 2>/dev/null || true
