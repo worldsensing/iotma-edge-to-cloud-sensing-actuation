@@ -12,6 +12,6 @@ else
     --access-logfile - \
     -w $(( 2 * `cat /proc/cpuinfo | grep 'core id' | wc -l` + 1 )) \
     --max-requests 1000 \
-    -k gevent \
+    -k geventwebsocket.gunicorn.workers.GeventWebSocketWorker \
     source.main:app
 fi
