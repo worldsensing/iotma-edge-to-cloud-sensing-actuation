@@ -8,6 +8,7 @@ from __init__ import SENSOR_CONFIGURED, ACTUATOR_CONFIGURED
 from api import api
 from connector_grovepi import pin_mode, send_digital_value
 from context_awareness import get_context_awareness_rules, read_sensor_information
+from socketio_events import SocketIOEvents
 
 app = Flask(__name__)
 app.register_blueprint(api)
@@ -47,5 +48,8 @@ if __name__ == "__main__":
         t = Thread(target=run_schedule)
         t.start()
 
+    print("Setup SocketIO...")
+    socketio = SocketIOEvents("localhost", "5001")
+
     print("Setup Flask server...")
-    app.run(host='0.0.0.0', port=8001, use_reloader=False)
+    app.run(host="0.0.0.0", port=8001, use_reloader=False)
