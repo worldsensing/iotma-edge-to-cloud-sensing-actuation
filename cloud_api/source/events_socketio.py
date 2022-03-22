@@ -17,7 +17,7 @@ def test_disconnect():
 
 @socketio.on("/receive_alarm_to_emit")
 def receive_alarm_to_emit():
-    emit("/aaa_response", {
+    emit("/on_receive_actuation_info", {
         "data": {
             "trigger": "WelcomePEPE"
         }
