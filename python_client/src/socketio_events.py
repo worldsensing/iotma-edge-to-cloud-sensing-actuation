@@ -4,7 +4,7 @@ import time
 
 from socketIO_client import SocketIO
 
-from . import actuation
+import actuation
 
 
 class SocketIOEvents:
