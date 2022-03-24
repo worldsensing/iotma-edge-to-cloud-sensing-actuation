@@ -49,7 +49,9 @@ if __name__ == "__main__":
         t.start()
 
     print("Setup SocketIO...")
-    socketio = SocketIOEvents("localhost", "5001")
+    socketio = SocketIOEvents("http://192.158.28.68:5001")
+    time.sleep(1)
+    socketio.send_actuation_info(True)
 
     print("Setup Flask server...")
     app.run(host="0.0.0.0", port=8001, use_reloader=False)
