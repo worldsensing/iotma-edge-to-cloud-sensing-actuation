@@ -15,10 +15,11 @@ def test_disconnect():
     logger.info("Client disconnected")
 
 
-@socketio.on("/receive_alarm_to_emit")
-def receive_alarm_to_emit():
-    emit("/on_receive_actuation_info", {
-        "data": {
-            "trigger": "WelcomePEPE"
-        }
-    })
+@socketio.on("/forward_message_to_clients")
+def forward_message_to_clients(args):
+    logger.info(f"Message received: /forward_message_to_clients {args}")
+
+    event_name = args["event_name"]
+    event_data = args["data"]
+
+    emit(event_name, event_data)
