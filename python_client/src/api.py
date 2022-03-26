@@ -11,6 +11,6 @@ def post():
 
     alarm_trigger = bool(resp_json["trigger"])
 
-    actuation.trigger_actuation(alarm_trigger)
+    actuation.trigger_actuation(alarm_trigger, "LOW_LATENCY")
 
     return "OK"

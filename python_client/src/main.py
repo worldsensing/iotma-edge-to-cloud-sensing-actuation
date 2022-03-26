@@ -26,6 +26,8 @@ if ACTUATOR_CONFIGURED == "BUZZER":
     send_digital_value(GREEN_LED, 0)
     BUZZER_PIN = 3  # Digital port 3
     send_digital_value(BUZZER_PIN, 0)
+    BLUE_LED = 4  # Digital port 4
+    send_digital_value(BLUE_LED, 0)
 
 
 def run_schedule():
@@ -49,9 +51,8 @@ if __name__ == "__main__":
         t.start()
 
     print("Setup SocketIO...")
-    socketio = SocketIOEvents("http://192.158.28.68:5001")
+    socketio = SocketIOEvents("http://35.195.86.253:5001")
     time.sleep(1)
-    socketio.send_actuation_info(True)
 
     print("Setup Flask server...")
     app.run(host="0.0.0.0", port=8001, use_reloader=False)

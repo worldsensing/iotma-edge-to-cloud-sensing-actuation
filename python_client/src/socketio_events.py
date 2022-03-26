@@ -21,7 +21,7 @@ class SocketIOEvents:
         print(f"Received: on_receive_actuation_info: {args}")
 
         alarm_trigger = bool(args["trigger"])
-        actuation.trigger_actuation(alarm_trigger)
+        actuation.trigger_actuation(alarm_trigger, "NORMAL_LATENCY")
 
     def send_actuation_info(self, actuation_trigger):
         event_to_emit = "/on_receive_actuation_info"
