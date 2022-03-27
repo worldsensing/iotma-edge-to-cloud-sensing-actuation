@@ -43,7 +43,10 @@ class SocketIOEvents:
     def __init__(self, url="localhost:5001") -> None:
         super().__init__()
 
-        self.socketIO.connect(url)
+        self.url = url
+
+    def connect(self):
+        self.socketIO.connect(self.url)
         signal.signal(signal.SIGINT, self.signal_handler)
 
         self.socketIO.emit("/connect")

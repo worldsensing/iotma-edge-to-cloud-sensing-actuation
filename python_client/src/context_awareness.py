@@ -8,7 +8,6 @@ from __init__ import IOTMA_SENSOR_NAME
 from core import get_context_awareness_rules as get_ca_rules_core, get_sensor, \
     get_observable_property, get_observation, create_actuation, \
     context_awareness_rule_should_be_triggered_observation
-from main import socketio
 from utils import get_current_time
 
 context_awareness_rules = None
@@ -77,7 +76,7 @@ def send_post_for_observation(value):
 
 
 def send_post_for_actuation():
-    from main import RED_LED
+    from main import RED_LED, socketio
 
     connector_grovepi.send_digital_value(RED_LED, 1)
     # requests.post(url=f"{URL_POST_ACTUATION_EDGE}/actuation", json={"trigger": True})

@@ -12,6 +12,7 @@ from socketio_events import SocketIOEvents
 
 app = Flask(__name__)
 app.register_blueprint(api)
+socketio = SocketIOEvents("http://35.195.86.253:5001")
 
 if SENSOR_CONFIGURED == "LIGHT":
     LIGHT_SENSOR = 1  # Analog port 1
@@ -51,8 +52,7 @@ if __name__ == "__main__":
         t.start()
 
     print("Setup SocketIO...")
-    socketio = SocketIOEvents("http://35.195.86.253:5001")
-    time.sleep(1)
+    socketio.connect()
 
     print("Setup Flask server...")
     app.run(host="0.0.0.0", port=8001, use_reloader=False)
