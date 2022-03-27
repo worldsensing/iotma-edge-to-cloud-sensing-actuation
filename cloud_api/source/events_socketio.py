@@ -6,7 +6,7 @@ from app import socketio, logger
 def __emit(event_name, event_data=None, broadcast=False):
     logger.info(f"Message emitted: {event_name} {event_data}")
 
-    emit(event_name, args=event_data, broadcast=broadcast)
+    emit(event_name, event_data, broadcast=broadcast)
 
 
 @socketio.on("/connect")
