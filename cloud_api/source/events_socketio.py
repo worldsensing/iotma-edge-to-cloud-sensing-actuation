@@ -3,10 +3,10 @@ from flask_socketio import emit
 from app import socketio, logger
 
 
-def __emit(event_name, event_data=None):
+def __emit(event_name, event_data=None, broadcast=False):
     logger.info(f"Message emitted: {event_name} {event_data}")
 
-    emit(event_name, event_data)
+    emit(event_name, event_data, broadcast)
 
 
 @socketio.on("/connect")
@@ -28,4 +28,4 @@ def forward_message_to_clients(args):
     event_name = args["event_name"]
     event_data = args["data"]
 
-    __emit(event_name, event_data)
+    __emit(event_name, event_data, broadcast=True)
