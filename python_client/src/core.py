@@ -3,9 +3,9 @@ import json
 import requests
 
 import utils
+from src import URL_POST_ACTUATION_CLOUD
 
-BASE_URL = "http://82a7-128-131-172-118.ngrok.io"
-# BASE_URL = "http://172.28.0.1:5001"
+BASE_URL = URL_POST_ACTUATION_CLOUD
 CONTEXT_AWARENESS_ENDPOINT_URL = "/context-awareness-rules/"
 SENSORS_ENDPOINT_URL = "/sensors/"
 SENSOR_OBSERVATIONS_ENDPOINT_URL = "/observations/"  # TODO Change to /sensor-observations/

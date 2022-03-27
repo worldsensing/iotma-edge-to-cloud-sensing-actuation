@@ -4,7 +4,7 @@ from threading import Thread
 import schedule
 from flask import Flask
 
-from __init__ import SENSOR_CONFIGURED, ACTUATOR_CONFIGURED
+from __init__ import SENSOR_CONFIGURED, ACTUATOR_CONFIGURED, URL_POST_ACTUATION_CLOUD
 from api import api
 from connector_grovepi import pin_mode, send_digital_value
 from context_awareness import get_context_awareness_rules, read_sensor_information
@@ -12,7 +12,7 @@ from socketio_events import SocketIOEvents
 
 app = Flask(__name__)
 app.register_blueprint(api)
-socketio = SocketIOEvents("http://35.195.86.253:5001")
+socketio = SocketIOEvents(URL_POST_ACTUATION_CLOUD)
 
 if SENSOR_CONFIGURED == "LIGHT":
     LIGHT_SENSOR = 1  # Analog port 1
