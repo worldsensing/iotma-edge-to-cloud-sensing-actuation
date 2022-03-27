@@ -5,6 +5,7 @@ import time
 import socketio
 
 import actuation
+from __init__ import PC_MODE
 
 
 class SocketIOEvents:
@@ -27,7 +28,7 @@ class SocketIOEvents:
         event_to_emit = "/on_receive_actuation_info"
         print(f"Send: /forward_message_to_clients: {event_to_emit} {actuation_trigger}")
 
-        self.socketIO.emit("/forward_message_to_clients", {
+        self.socketIO.emit("/forward_message_to_clients", data={
             "event_name": event_to_emit,
             "data": {
                 "trigger": actuation_trigger
@@ -36,9 +37,13 @@ class SocketIOEvents:
 
     def signal_handler(self, sig, frame):
         print("Stopping script...")
-        self.socketIO.disconnect()
-        time.sleep(1)
-        sys.exit(0)
+
+        if PC_MODE:  # Debug purposes
+            self.send_actuation_info(True)
+        else:
+            self.socketIO.disconnect()
+            time.sleep(1)
+            sys.exit(0)
 
     def __init__(self, url="localhost:5001") -> None:
         super().__init__()
