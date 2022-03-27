@@ -3,10 +3,16 @@ from flask_socketio import emit
 from app import socketio, logger
 
 
+def __emit(event_name, event_data=None):
+    logger.info(f"Message emitted: {event_name} {event_data}")
+
+    emit(event_name, event_data)
+
+
 @socketio.on("/connect")
 def test_connect():
     logger.info("Client connected")
-    emit("/on_connect_checks")
+    __emit("/on_connect_checks")
 
 
 # This route cannot be changed as the socket-io-client implements "disconnect" as callback
@@ -22,4 +28,4 @@ def forward_message_to_clients(args):
     event_name = args["event_name"]
     event_data = args["data"]
 
-    emit(event_name, event_data)
+    __emit(event_name, event_data)
