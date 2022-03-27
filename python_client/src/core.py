@@ -3,7 +3,7 @@ import json
 import requests
 
 import utils
-from src import URL_POST_ACTUATION_CLOUD
+from __init__ import URL_POST_ACTUATION_CLOUD
 
 BASE_URL = URL_POST_ACTUATION_CLOUD
 CONTEXT_AWARENESS_ENDPOINT_URL = "/context-awareness-rules/"
