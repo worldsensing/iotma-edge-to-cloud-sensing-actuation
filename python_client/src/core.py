@@ -99,14 +99,14 @@ def get_sensor_observations(sensor_name):
     return sensor_observations
 
 
-def create_actuation(observation, context_awareness_rule):
-    print(f"Sending POST to create an Actuation for ObservationID {observation['id']} "
+def create_actuation(observation_id, context_awareness_rule):
+    print(f"Sending POST to create an Actuation for ObservationID {observation_id} "
           f"and ContextAwarenessRuleName {context_awareness_rule['name']}...")
     url = BASE_URL + ACTUATIONS_ENDPOINT_URL
     print(url)
 
     data = {
-        "observation_id": observation["id"],
+        "observation_id": observation_id,
         "context_awareness_rule_name": context_awareness_rule["name"],
         "time_start": utils.get_current_time(),
         "time_end": None
