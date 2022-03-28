@@ -42,7 +42,7 @@ def check_context_awareness_rules(sensor_observation_id):
                     if observation_triggered is not None:
                         create_actuation(observation_triggered, context_awareness_rule)
                         return context_awareness_rule["priority"]
-    return None
+    return False
 
 
 def read_sensor_information():
@@ -56,7 +56,7 @@ def read_sensor_information():
         connector_grovepi.send_digital_value(RED_LED, 0)
         should_raise_priority_actuation = check_context_awareness_rules(observation_id)
 
-        if should_raise_priority_actuation is not None and should_raise_priority_actuation:
+        if should_raise_priority_actuation:
             send_high_priority_actuation()
         else:
             send_normal_priority_actuation()
