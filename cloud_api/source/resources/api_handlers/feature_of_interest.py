@@ -1,14 +1,11 @@
-import logging
-
 from flask_restful import reqparse
 
+from app import logger
 from errors.api_errors import GENERIC, NOT_EXISTS_ID, FIELD_NOT_VALID, EXISTS_ID
 from models import FeatureOfInterest
 from resources import Resource, Response
 from translators import api_translators as translator
 from validators.api_validators import FeatureOfInterestValidator
-
-logger = logging.getLogger(__name__)
 
 feature_of_interest_parser = reqparse.RequestParser()
 feature_of_interest_parser.add_argument("name", type=str)
@@ -18,6 +15,7 @@ feature_of_interest_parser.add_argument("location_name", type=str)
 class FeatureOfInterestHandler:
     class FeaturesOfInterest(Resource):
         def get(self):
+            logger.debug(f"[GET] /features-of-interest/")
             response = self.repository.feature_of_interest_repository.get_all_features_of_interest()
 
             return Response.success(
@@ -25,6 +23,7 @@ class FeatureOfInterestHandler:
                  feature_of_interest in response])
 
         def post(self):
+            logger.debug(f"[POST] /features-of-interest/")
             args = feature_of_interest_parser.parse_args()
 
             # Get FeatureOfInterest arguments
@@ -61,6 +60,7 @@ class FeatureOfInterestHandler:
 
     class FeatureOfInterest(Resource):
         def get(self, feature_of_interest_name):
+            logger.debug(f"[GET] /features-of-interest/{feature_of_interest_name}")
             response = self.repository.feature_of_interest_repository.get_feature_of_interest(
                 feature_of_interest_name)
 
@@ -69,6 +69,7 @@ class FeatureOfInterestHandler:
             return Response.error(NOT_EXISTS_ID)
 
         def put(self, feature_of_interest_name):
+            logger.debug(f"[PUT] /features-of-interest/{feature_of_interest_name}")
             args = feature_of_interest_parser.parse_args()
 
             response = self.repository.feature_of_interest_repository.get_feature_of_interest(
@@ -105,6 +106,7 @@ class FeatureOfInterestHandler:
             return Response.error(GENERIC)
 
         def delete(self, feature_of_interest_name):
+            logger.debug(f"[DELETE] /features-of-interest/{feature_of_interest_name}")
             response = self.repository.feature_of_interest_repository.get_feature_of_interest(
                 feature_of_interest_name)
 

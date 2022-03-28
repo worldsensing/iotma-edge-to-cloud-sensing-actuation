@@ -1,15 +1,12 @@
-import logging
-
 from flask_restful import reqparse
 
+from app import logger
 from errors.api_errors import GENERIC, NOT_EXISTS_ID, FIELD_NOT_VALID, EXISTS_ID, \
     NOT_EXISTS_LOCATION
 from models import Platform
 from resources import Resource, Response
 from translators import api_translators as translator
 from validators.api_validators import PlatformValidator
-
-logger = logging.getLogger(__name__)
 
 platform_parser = reqparse.RequestParser()
 platform_parser.add_argument("name", type=str)
@@ -19,12 +16,14 @@ platform_parser.add_argument("location_name", type=str, required=False)
 class PlatformHandler:
     class Platforms(Resource):
         def get(self):
+            logger.debug(f"[GET] /platforms/")
             response = self.repository.platform_repository.get_all_platforms()
 
             return Response.success(
                 [translator.platform_translator(platform) for platform in response])
 
         def post(self):
+            logger.debug(f"[POST] /platforms/")
             args = platform_parser.parse_args()
 
             # Get Platform arguments
@@ -56,6 +55,7 @@ class PlatformHandler:
 
     class Platform(Resource):
         def get(self, platform_name):
+            logger.debug(f"[GET] /platforms/{platform_name}")
             response = self.repository.platform_repository.get_platform(platform_name)
 
             if response:
@@ -63,6 +63,7 @@ class PlatformHandler:
             return Response.error(NOT_EXISTS_ID)
 
         def put(self, platform_name):
+            logger.debug(f"[PUT] /platforms/{platform_name}")
             args = platform_parser.parse_args()
 
             response = self.repository.platform_repository.get_platform(platform_name)
@@ -92,6 +93,7 @@ class PlatformHandler:
             return Response.error(GENERIC)
 
         def delete(self, platform_name):
+            logger.debug(f"[DELETE] /platforms/{platform_name}")
             response = self.repository.platform_repository.get_platform(platform_name)
 
             if response is None:
@@ -104,6 +106,7 @@ class PlatformHandler:
 
     class PlatformObservation(Resource):
         def get(self, platform_name):
+            logger.debug(f"[GET] UNUSED")
             response = self.repository.platform_repository.get_platform(platform_name)
             if response is None:
                 return Response.error(NOT_EXISTS_ID)

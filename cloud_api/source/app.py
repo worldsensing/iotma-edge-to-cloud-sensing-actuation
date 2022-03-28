@@ -5,7 +5,6 @@ from flask.logging import default_handler
 from flask_restful import Api
 from flask_socketio import SocketIO
 
-from resources.resources_loader import Resources
 from utils import db_uri
 
 logger = logging.getLogger(__name__)
@@ -19,6 +18,8 @@ socketio = SocketIO()
 
 
 def create_app(settings=SQLALCHEMY_SETTINGS):
+    from resources.resources_loader import Resources
+
     app = Flask(__name__)
     api = Api(app)
 

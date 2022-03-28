@@ -1,7 +1,6 @@
-import logging
-
 from flask_restful import reqparse
 
+from app import logger
 from errors.api_errors import GENERIC, NOT_EXISTS_ID, FIELD_NOT_VALID, THING_TYPE_HAS_TYPE, \
     EXISTS_ID
 from models import ThingType
@@ -9,7 +8,6 @@ from resources import Resource, Response
 from translators import api_translators as translator
 from validators.api_validators import ThingTypeValidator
 
-logger = logging.getLogger(__name__)
 thing_type_parser = reqparse.RequestParser()
 thing_type_parser.add_argument("name", type=str)
 
@@ -17,6 +15,7 @@ thing_type_parser.add_argument("name", type=str)
 class ThingTypeHandler:
     class ThingTypes(Resource):
         def get(self):
+            logger.debug(f"[GET] /thing-types/")
             response = self.repository.thing_type_repository.get_all_thing_types()
 
             return Response.success(
@@ -24,6 +23,7 @@ class ThingTypeHandler:
                  for thing_type in response])
 
         def post(self):
+            logger.debug(f"[POST] /thing-types/")
             args = thing_type_parser.parse_args()
 
             # Get ThingType arguments
@@ -46,6 +46,7 @@ class ThingTypeHandler:
 
     class ThingType(Resource):
         def get(self, thing_type_name):
+            logger.debug(f"[GET] /thing-types/{thing_type_name}")
             response = self.repository.thing_type_repository.get_thing_type(thing_type_name)
 
             if response:
@@ -53,6 +54,7 @@ class ThingTypeHandler:
             return Response.error(NOT_EXISTS_ID)
 
         def put(self, thing_type_name):
+            logger.debug(f"[PUT] /thing-types/{thing_type_name}")
             args = thing_type_parser.parse_args()
 
             response = self.repository.thing_type_repository.get_thing_type(thing_type_name)
@@ -77,6 +79,7 @@ class ThingTypeHandler:
             return Response.error(GENERIC)
 
         def delete(self, thing_type_name):
+            logger.debug(f"[DELETE] /thing-types/{thing_type_name}")
             response = self.repository.thing_type_repository.get_thing_type(thing_type_name)
 
             if response is None:

@@ -1,7 +1,6 @@
-import logging
-
 from flask_restful import reqparse
 
+from app import logger
 from errors.api_errors import GENERIC, NOT_EXISTS_ID, FIELD_NOT_VALID, NOT_EXISTS_THING, \
     NOT_THING_TYPE
 from models import ObservationBoolean, ObservationString, ObservationInteger, ObservationFloat
@@ -9,8 +8,6 @@ from models.ObservableProperty import ObservableValueTypeEnum
 from resources import Resource, Response
 from translators import api_translators as translator
 from validators.api_validators import ObservationValidator
-
-logger = logging.getLogger(__name__)
 
 observation_parser = reqparse.RequestParser()
 observation_parser.add_argument("sensor_name", type=str)
@@ -22,6 +19,7 @@ observation_parser.add_argument("value", type=str)
 class ObservationHandler:
     class Observations(Resource):
         def get(self):
+            logger.debug(f"[GET] /observations/")
             response = self.repository.observation_repository.get_all_observations()
 
             return Response.success(
@@ -29,6 +27,7 @@ class ObservationHandler:
                  for observation in response])
 
         def post(self):
+            logger.debug(f"[POST] /observations/")
             args = observation_parser.parse_args()
 
             # Get Observation arguments
@@ -103,6 +102,7 @@ class ObservationHandler:
 
     class Observation(Resource):
         def get(self, observation_id):
+            logger.debug(f"[GET] /observations/{observation_id}")
             response = self.repository.observation_repository.get_observation(observation_id)
 
             if response:
@@ -110,6 +110,7 @@ class ObservationHandler:
             return Response.error(NOT_EXISTS_ID)
 
         def delete(self, observation_id):
+            logger.debug(f"[DELETE] /observations/{observation_id}")
             response = self.repository.observation_repository.get_observation(observation_id)
 
             if response is None:

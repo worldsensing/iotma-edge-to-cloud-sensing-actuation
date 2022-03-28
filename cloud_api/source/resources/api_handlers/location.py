@@ -1,14 +1,11 @@
-import logging
-
 from flask_restful import reqparse
 
+from app import logger
 from errors.api_errors import GENERIC, NOT_EXISTS_ID, FIELD_NOT_VALID, EXISTS_ID
 from models import Location
 from resources import Resource, Response
 from translators import api_translators as translator
 from validators.api_validators import LocationValidator
-
-logger = logging.getLogger(__name__)
 
 location_parser = reqparse.RequestParser()
 location_parser.add_argument("name", type=str)
@@ -18,6 +15,7 @@ location_parser.add_argument("latlng", type=str, required=False)
 class LocationHandler:
     class Locations(Resource):
         def get(self):
+            logger.debug(f"[GET] /locations/")
             response = self.repository.location_repository.get_all_locations()
 
             return Response.success(
@@ -25,6 +23,7 @@ class LocationHandler:
                  for location in response])
 
         def post(self):
+            logger.debug(f"[POST] /locations/")
             args = location_parser.parse_args()
 
             # Get Location arguments
@@ -52,6 +51,7 @@ class LocationHandler:
 
     class Location(Resource):
         def get(self, location_name):
+            logger.debug(f"[GET] /locations/{location_name}")
             response = self.repository.location_repository.get_location(location_name)
 
             if response:
@@ -59,6 +59,7 @@ class LocationHandler:
             return Response.error(NOT_EXISTS_ID)
 
         def put(self, location_name):
+            logger.debug(f"[PUT] /locations/{location_name}")
             args = location_parser.parse_args()
 
             # Get Location arguments
@@ -88,6 +89,7 @@ class LocationHandler:
             return Response.error(GENERIC)
 
         def delete(self, location_name):
+            logger.debug(f"[DELETE] /locations/{location_name}")
             response = self.repository.location_repository.get_location(location_name)
 
             if response is None:

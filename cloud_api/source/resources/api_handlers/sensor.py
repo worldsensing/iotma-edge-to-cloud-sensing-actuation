@@ -1,15 +1,12 @@
-import logging
-
 from flask_restful import reqparse
 
+from app import logger
 from errors.api_errors import GENERIC, NOT_EXISTS_ID, FIELD_NOT_VALID, EXISTS_ID, \
     NOT_EXISTS_LOCATION
 from models import Sensor
 from resources import Resource, Response
 from translators import api_translators as translator
 from validators.api_validators import SensorValidator
-
-logger = logging.getLogger(__name__)
 
 sensor_parser = reqparse.RequestParser()
 sensor_parser.add_argument("name", type=str)
@@ -21,12 +18,14 @@ sensor_parser.add_argument("location_name", type=str, required=False)
 class SensorHandler:
     class Sensors(Resource):
         def get(self):
+            logger.debug(f"[GET] /sensors/")
             response = self.repository.sensor_repository.get_all_sensors()
 
             return Response.success(
                 [translator.sensor_translator(sensor) for sensor in response])
 
         def post(self):
+            logger.debug(f"[POST] /sensors/")
             args = sensor_parser.parse_args()
 
             # Get Sensor arguments
@@ -79,6 +78,7 @@ class SensorHandler:
 
     class Sensor(Resource):
         def get(self, sensor_name):
+            logger.debug(f"[GET] /sensors/{sensor_name}")
             response = self.repository.sensor_repository.get_sensor(sensor_name)
 
             if response:
@@ -86,6 +86,7 @@ class SensorHandler:
             return Response.error(NOT_EXISTS_ID)
 
         def put(self, sensor_name):
+            logger.debug(f"[PUT] /sensors/{sensor_name}")
             args = sensor_parser.parse_args()
 
             response = self.repository.sensor_repository.get_sensor(sensor_name)
@@ -140,6 +141,7 @@ class SensorHandler:
             return Response.error(GENERIC)
 
         def delete(self, sensor_name):
+            logger.debug(f"[DELETE] /sensors/{sensor_name}")
             response = self.repository.sensor_repository.get_sensor(sensor_name)
 
             if response is None:
@@ -152,6 +154,7 @@ class SensorHandler:
 
     class SensorObservation(Resource):
         def get(self, sensor_name):
+            logger.debug(f"[GET] /sensors/{sensor_name}/observations/")
             response = self.repository.sensor_repository.get_sensor(sensor_name)
             if response is None:
                 return Response.error(NOT_EXISTS_ID)
