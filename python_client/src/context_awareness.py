@@ -1,5 +1,4 @@
 import json
-import time
 
 import requests
 
@@ -27,10 +26,7 @@ def check_context_awareness_rules(sensor_observation_id):
                 print(context_awareness_rule)
                 sensor_name = context_awareness_rule["sensor_observed_name"]
 
-                print("\n1\n1\n1")
-
                 if sensor_name == IOTMA_SENSOR_NAME:
-                    print("\n2\n2\n2")
                     sensor = get_sensor(sensor_name)
                     observable_property = get_observable_property(
                         sensor["observable_property_name"])
@@ -43,10 +39,8 @@ def check_context_awareness_rules(sensor_observation_id):
                         context_awareness_rule, observable_property, sensor_observations)
 
                     if observation_triggered is not None:
-                        print("\n3\n3\n3")
-                        create_actuation(observation_triggered, context_awareness_rule)
-                        return context_awareness_rule["priority"]
-    return False
+                        return context_awareness_rule
+    return None
 
 
 def read_sensor_information():
@@ -58,12 +52,15 @@ def read_sensor_information():
         observation_id = send_post_for_observation(resistance_value)
 
         connector_grovepi.send_digital_value(RED_LED, 0)
-        should_raise_priority_actuation = check_context_awareness_rules(observation_id)
+        context_awareness_rule = check_context_awareness_rules(observation_id)
 
-        if should_raise_priority_actuation:
-            send_high_priority_actuation()
-        else:
-            send_normal_priority_actuation()
+        if context_awareness_rule is not None:
+            create_actuation(observation_id, context_awareness_rule)
+
+            if context_awareness_rule["priority"]:
+                send_high_priority_actuation()
+            else:
+                send_normal_priority_actuation()
 
     except IOError as error:
         print("Error")
