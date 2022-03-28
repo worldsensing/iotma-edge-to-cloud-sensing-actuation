@@ -27,7 +27,10 @@ def check_context_awareness_rules(sensor_observation_id):
                 print(context_awareness_rule)
                 sensor_name = context_awareness_rule["sensor_observed_name"]
 
+                print("\n1\n1\n1")
+
                 if sensor_name == IOTMA_SENSOR_NAME:
+                    print("\n2\n2\n2")
                     sensor = get_sensor(sensor_name)
                     observable_property = get_observable_property(
                         sensor["observable_property_name"])
@@ -40,6 +43,7 @@ def check_context_awareness_rules(sensor_observation_id):
                         context_awareness_rule, observable_property, sensor_observations)
 
                     if observation_triggered is not None:
+                        print("\n3\n3\n3")
                         create_actuation(observation_triggered, context_awareness_rule)
                         return context_awareness_rule["priority"]
     return False
