@@ -4,7 +4,7 @@ import time
 import requests
 
 import connector_grovepi
-from __init__ import IOTMA_SENSOR_NAME
+from __init__ import IOTMA_SENSOR_NAME, URL_POST_ACTUATION_EDGE
 from core import get_context_awareness_rules as get_ca_rules_core, get_sensor, \
     get_observable_property, get_observation, create_actuation, \
     context_awareness_rule_should_be_triggered_observation
@@ -40,8 +40,9 @@ def check_context_awareness_rules(sensor_observation_id):
                         context_awareness_rule, observable_property, sensor_observations)
 
                     if observation_triggered is not None:
-                        return create_actuation(observation_triggered, context_awareness_rule)
-    return False
+                        create_actuation(observation_triggered, context_awareness_rule)
+                        return context_awareness_rule["priority"]
+    return None
 
 
 def read_sensor_information():
@@ -56,9 +57,12 @@ def read_sensor_information():
         time.sleep(1)
         should_raise_priority_actuation = check_context_awareness_rules(observation_id)
 
-        if should_raise_priority_actuation:
+        if should_raise_priority_actuation is not None and should_raise_priority_actuation:
             print("Raise priority actuation")
-            send_post_for_actuation()
+            send_high_priority_actuation()
+        else:
+            send_normal_priority_actuation()
+
     except IOError as error:
         print("Error")
         print(error)
@@ -75,9 +79,15 @@ def send_post_for_observation(value):
     return observation["id"]
 
 
-def send_post_for_actuation():
+def send_high_priority_actuation():
+    from main import RED_LED
+
+    connector_grovepi.send_digital_value(RED_LED, 1)
+    requests.post(url=f"{URL_POST_ACTUATION_EDGE}/actuation", json={"trigger": True})
+
+
+def send_normal_priority_actuation():
     from main import RED_LED, socketio
 
     connector_grovepi.send_digital_value(RED_LED, 1)
-    # requests.post(url=f"{URL_POST_ACTUATION_EDGE}/actuation", json={"trigger": True})
-    socketio.send_actuation_info(True)  # TODO This should be dynamic from ontology
+    socketio.send_actuation_info(True)

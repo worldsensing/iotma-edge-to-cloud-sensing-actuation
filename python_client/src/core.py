@@ -115,11 +115,6 @@ def create_actuation(observation, context_awareness_rule):
     r = requests.post(url, json=data)
     print(r.text)
 
-    if context_awareness_rule["priority"]:
-        return True
-
-    return False
-
 
 def get_context_awareness_rules():
     print("Sending GET to obtain Context Awareness Rules...")
