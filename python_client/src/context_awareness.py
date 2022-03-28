@@ -54,11 +54,9 @@ def read_sensor_information():
         observation_id = send_post_for_observation(resistance_value)
 
         connector_grovepi.send_digital_value(RED_LED, 0)
-        time.sleep(1)
         should_raise_priority_actuation = check_context_awareness_rules(observation_id)
 
         if should_raise_priority_actuation is not None and should_raise_priority_actuation:
-            print("Raise priority actuation")
             send_high_priority_actuation()
         else:
             send_normal_priority_actuation()
@@ -82,12 +80,16 @@ def send_post_for_observation(value):
 def send_high_priority_actuation():
     from main import RED_LED
 
+    print("Raise HIGH PRIORITY actuation")
+
     connector_grovepi.send_digital_value(RED_LED, 1)
     requests.post(url=f"{URL_POST_ACTUATION_EDGE}/actuation", json={"trigger": True})
 
 
 def send_normal_priority_actuation():
     from main import RED_LED, socketio
+
+    print("Raise NORMAL PRIORITY actuation")
 
     connector_grovepi.send_digital_value(RED_LED, 1)
     socketio.send_actuation_info(True)
