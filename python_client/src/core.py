@@ -115,7 +115,7 @@ def get_sensor_observations(sensor_name):
 
 def get_actuation(actuation_id):
     print(f"Sending GET to obtain Actuation for Actuation {actuation_id} ")
-    url = BASE_URL + ACTUATIONS_ENDPOINT_URL
+    url = f"{BASE_URL}{ACTUATIONS_ENDPOINT_URL}/{actuation_id}"
     print(url)
 
     r = requests.get(url)
