@@ -154,8 +154,9 @@ def update_actuation(actuation_id, actuation):
     print(actuation)
 
     r = requests.put(url, json=actuation)
-    actuation = json.loads(r.content)["data"]
-    print(actuation)
+    print(r.text)
+    actuation_id = json.loads(r.content)["data"]
+    print(actuation_id)
 
 
 def get_context_awareness_rules():
