@@ -1,7 +1,7 @@
 from flask_restful import reqparse
 
 from app import logger
-from errors.api_errors import GENERIC, NOT_EXISTS_ID, NOT_EXISTS_THING, FIELD_NOT_VALID
+from errors.api_errors import GENERIC, NOT_EXISTS_ID, FIELD_NOT_VALID
 from models import Actuation
 from resources import Resource, Response
 from translators import api_translators as translator
@@ -34,7 +34,7 @@ class ActuationHandler:
 
                 observation = self.repository.observation_repository.get_observation(observation_id)
                 if not observation:
-                    return Response.error(NOT_EXISTS_THING)
+                    return Response.error(NOT_EXISTS_ID)
             else:
                 return Response.error(FIELD_NOT_VALID)
 
@@ -45,7 +45,7 @@ class ActuationHandler:
                 context_awareness_rule = self.repository.context_awareness_rule_repository. \
                     get_context_awareness_rule(context_awareness_rule_name)
                 if not context_awareness_rule:
-                    return Response.error(NOT_EXISTS_THING)
+                    return Response.error(NOT_EXISTS_ID)
             else:
                 return Response.error(FIELD_NOT_VALID)
 
@@ -78,6 +78,59 @@ class ActuationHandler:
             if response:
                 return Response.success(translator.actuation_translator(response))
             return Response.error(NOT_EXISTS_ID)
+
+        def put(self, actuation_id):
+            logger.debug(f"[PUT] /actuations/{actuation_id}")
+            args = actuation_parser.parse_args()
+
+            response = self.repository.actuation_repository.get_actuation(actuation_id)
+            if response is None:
+                return Response.error(NOT_EXISTS_ID)
+
+            # Get Actuation arguments
+            if ActuationValidator.is_observation_id_valid(args["observation_id"]):
+                observation_id = args["observation_id"]
+
+                observation = self.repository.observation_repository.get_observation(observation_id)
+                if not observation:
+                    return Response.error(NOT_EXISTS_ID)
+            else:
+                return Response.error(FIELD_NOT_VALID)
+
+            if ActuationValidator. \
+                    is_context_awareness_rule_name_valid(args["context_awareness_rule_name"]):
+                context_awareness_rule_name = args["context_awareness_rule_name"]
+
+                context_awareness_rule = self.repository.context_awareness_rule_repository. \
+                    get_context_awareness_rule(context_awareness_rule_name)
+                if not context_awareness_rule:
+                    return Response.error(NOT_EXISTS_ID)
+            else:
+                return Response.error(FIELD_NOT_VALID)
+
+            if ActuationValidator.is_time_start_valid(args["time_start"]):
+                time_start = args["time_start"]
+            else:
+                return Response.error(FIELD_NOT_VALID)
+
+            if ActuationValidator.is_time_end_valid(args["time_end"]):
+                time_end = args["time_end"]
+            else:
+                time_end = None
+
+            actuation = {
+                "observation_id": observation_id,
+                "context_awareness_rule_name": context_awareness_rule_name,
+                "time_start": time_start,
+                "time_end": time_end
+            }
+
+            response = self.repository.actuation_repository.update_actuation(actuation_id,
+                                                                             actuation)
+            if response:
+                return Response.success({"id": response})
+
+            return Response.error(GENERIC)
 
         def delete(self, actuation_id):
             logger.debug(f"[DELETE] /actuations/{actuation_id}")

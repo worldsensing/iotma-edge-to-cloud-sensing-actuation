@@ -125,6 +125,34 @@ def test_add_actuation(api_client, orm_client, create_observation, create_contex
     assert_actuations(response_content, actuation_1)
 
 
+@pytest.mark.parametrize("test_input, test_modify", [
+    ([0, "Rule1", "2020-03-19T12:00:00+00:00", None],
+     [0, "Rule1", "2020-03-19T12:00:00+00:00", "2020-03-19T12:00:00.100+00:00"])
+])
+def test_update_actuation(api_client, orm_client, create_observation, create_context_awareness_rule,
+                          test_input, test_modify):
+    assert orm_client.session.query(Actuation).count() == 0
+    actuation_1 = ActuationFactory2DB(observation_id=test_input[0],
+                                      context_awareness_rule_name=test_input[1],
+                                      time_start=test_input[2])
+    assert orm_client.session.query(Actuation).count() == 1
+
+    actuation_to_modify = ActuationDictFactory(observation_id=test_modify[0],
+                                               context_awareness_rule_name=test_modify[1],
+                                               time_start=test_modify[2],
+                                               time_end=test_modify[3])
+
+    rv = api_client.put(f"/actuations/{actuation_1.id}",
+                        json=actuation_to_modify)
+    assert rv.status_code == 200
+    assert orm_client.session.query(Actuation).count() == 1
+
+    rv = api_client.get(f"/actuations/{actuation_1.id}")
+    assert rv.status_code == 200
+    response_content = json.loads(rv.data)['data']
+    assert_actuations(response_content, actuation_to_modify)
+
+
 @pytest.mark.parametrize("test_input", [
     ([0, "Rule1", "2020-03-19T12:00:00+00:00", "2020-03-19T13:00:00+00:00"])
 ])
