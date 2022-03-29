@@ -60,8 +60,8 @@ def get_observable_property(observable_property_name):
     print(url)
 
     r = requests.get(url)
-    print(r.text)
     observable_property = json.loads(r.content)["data"]
+    print(observable_property)
 
     return observable_property
 
@@ -72,20 +72,34 @@ def get_sensor(sensor_name):
     print(url)
 
     r = requests.get(url)
-    print(r.text)
     sensor = json.loads(r.content)["data"]
+    print(sensor)
 
     return sensor
 
 
+def post_sensor_observation(value):
+    print(f"Sending POST to create an observation")
+    url = f"{BASE_URL}{OBSERVATIONS_ENDPOINT_URL}"
+    print(url)
+    body = {"sensor_name": "RainSensor", "time_start": utils.get_current_time(), "value": value}
+    print(body)
+
+    r = requests.post(url, json=body)
+    observation = json.loads(r.content)["data"]
+    print(observation)
+
+    return observation["id"]
+
+
 def get_sensor_observations(sensor_name):
     print(f"Sending GET to obtain Observation data for Sensor {sensor_name}...")
-    url = BASE_URL + SENSOR_OBSERVATIONS_ENDPOINT_URL
+    url = f"{BASE_URL}{SENSOR_OBSERVATIONS_ENDPOINT_URL}"
     print(url)
 
     r = requests.get(url)
-    print(r.text)
     all_sensor_observations = json.loads(r.content)["data"]
+    print(all_sensor_observations)
 
     sensor_observations = []
     # Temporal code to remove the non-wanted sensors
@@ -99,26 +113,54 @@ def get_sensor_observations(sensor_name):
     return sensor_observations
 
 
+def get_actuation(actuation_id):
+    print(f"Sending GET to obtain Actuation for Actuation {actuation_id} ")
+    url = BASE_URL + ACTUATIONS_ENDPOINT_URL
+    print(url)
+
+    r = requests.get(url)
+    actuation = json.loads(r.content)["data"]
+    print(actuation)
+
+    return actuation
+
+
 def create_actuation(observation_id, context_awareness_rule):
     print(f"Sending POST to create an Actuation for ObservationID {observation_id} "
           f"and ContextAwarenessRuleName {context_awareness_rule['name']}...")
     url = BASE_URL + ACTUATIONS_ENDPOINT_URL
     print(url)
 
-    data = {
+    body = {
         "observation_id": observation_id,
         "context_awareness_rule_name": context_awareness_rule["name"],
         "time_start": utils.get_current_time(),
         "time_end": None
     }
+    print(body)
 
-    r = requests.post(url, json=data)
-    print(r.text)
+    r = requests.post(url, json=body)
+    actuation = json.loads(r.content)["data"]
+    print(actuation)
+
+    return actuation["id"]
+
+
+def update_actuation(actuation_id, actuation):
+    print(f"Sending PUT to update an Actuation for Actuation ID {actuation_id} ")
+    url = f"{BASE_URL}{ACTUATIONS_ENDPOINT_URL}/{actuation_id}"
+    print(url)
+
+    print(actuation)
+
+    r = requests.put(url, json=actuation)
+    actuation = json.loads(r.content)["data"]
+    print(actuation)
 
 
 def get_context_awareness_rules():
     print("Sending GET to obtain Context Awareness Rules...")
-    url = BASE_URL + CONTEXT_AWARENESS_ENDPOINT_URL
+    url = f"{BASE_URL}{CONTEXT_AWARENESS_ENDPOINT_URL}"
     print(url)
 
     r = requests.get(url)

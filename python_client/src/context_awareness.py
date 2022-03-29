@@ -1,13 +1,10 @@
-import json
-
 import requests
 
 import connector_grovepi
 from __init__ import IOTMA_SENSOR_NAME, URL_POST_ACTUATION_EDGE
 from core import get_context_awareness_rules as get_ca_rules_core, get_sensor, \
     get_observable_property, get_observation, create_actuation, \
-    context_awareness_rule_should_be_triggered_observation
-from utils import get_current_time
+    context_awareness_rule_should_be_triggered_observation, post_sensor_observation
 
 context_awareness_rules = None
 
@@ -49,48 +46,39 @@ def read_sensor_information():
     try:
         resistance_value = connector_grovepi.read_analog_value(LIGHT_SENSOR)
         print(f"Value is: {resistance_value}")
-        observation_id = send_post_for_observation(resistance_value)
+        observation_id = post_sensor_observation(resistance_value)
 
         connector_grovepi.send_digital_value(RED_LED, 0)
         context_awareness_rule = check_context_awareness_rules(observation_id)
 
         if context_awareness_rule is not None:
-            create_actuation(observation_id, context_awareness_rule)
+            actuation_id = create_actuation(observation_id, context_awareness_rule)
 
             if context_awareness_rule["priority"]:
-                send_high_priority_actuation()
+                send_high_priority_actuation(actuation_id)
             else:
-                send_normal_priority_actuation()
+                send_normal_priority_actuation(actuation_id)
 
     except IOError as error:
         print("Error")
         print(error)
 
 
-def send_post_for_observation(value):
-    from core import BASE_URL, OBSERVATIONS_ENDPOINT_URL
-    print(f"post_observation")
-    body = {"sensor_name": "RainSensor", "time_start": get_current_time(), "value": value}
-    print(body)
-    r = requests.post(url=f"{BASE_URL}{OBSERVATIONS_ENDPOINT_URL}", json=body)
-
-    observation = json.loads(r.content)["data"]
-    return observation["id"]
-
-
-def send_high_priority_actuation():
+def send_high_priority_actuation(actuation_id):
     from main import RED_LED
 
     print("Raise HIGH PRIORITY actuation")
 
     connector_grovepi.send_digital_value(RED_LED, 1)
-    requests.post(url=f"{URL_POST_ACTUATION_EDGE}/actuation", json={"trigger": True})
+    requests.post(url=f"{URL_POST_ACTUATION_EDGE}/actuation", json={"trigger": True,
+                                                                    "origin_actuation":
+                                                                        actuation_id})
 
 
-def send_normal_priority_actuation():
+def send_normal_priority_actuation(actuation_id):
     from main import RED_LED, socketio
 
     print("Raise NORMAL PRIORITY actuation")
 
     connector_grovepi.send_digital_value(RED_LED, 1)
-    socketio.send_actuation_info(True)
+    socketio.send_actuation_info(True, actuation_id)

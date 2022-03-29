@@ -22,16 +22,18 @@ class SocketIOEvents:
         print(f"Received: on_receive_actuation_info: {args}")
 
         alarm_trigger = bool(args["trigger"])
-        actuation.trigger_actuation(alarm_trigger, "NORMAL_LATENCY")
+        actuation_id = int(args["origin_actuation"])
+        actuation.trigger_actuation(alarm_trigger, actuation_id, "NORMAL_LATENCY")
 
-    def send_actuation_info(self, actuation_trigger):
+    def send_actuation_info(self, actuation_trigger, actuation_id):
         event_to_emit = "/on_receive_actuation_info"
         print(f"Send: /forward_message_to_clients: {event_to_emit} {actuation_trigger}")
 
         self.socketIO.emit("/forward_message_to_clients", data={
             "event_name": event_to_emit,
             "data": {
-                "trigger": actuation_trigger
+                "trigger": actuation_trigger,
+                "origin_actuation": actuation_id
             }
         })
 
