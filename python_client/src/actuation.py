@@ -2,7 +2,7 @@ import time
 
 import connector_grovepi
 from __init__ import ACTUATOR_CONFIGURED
-from core import get_actuation, update_actuation
+from core import patch_actuation_end_time
 from utils import get_current_time
 
 
@@ -18,9 +18,7 @@ def trigger_actuation(alarm_trigger, actuation_id, via="NORMAL_LATENCY"):
         if via == "LOW_LATENCY":
             connector_grovepi.send_digital_value(BLUE_LED, alarm_trigger)
 
-        actuation = get_actuation(actuation_id)
-        actuation["time_end"] = current_time
-        update_actuation(actuation_id, actuation)
+        patch_actuation_end_time(actuation_id, current_time)
 
         time.sleep(1)
 

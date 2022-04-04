@@ -125,16 +125,16 @@ def get_actuation(actuation_id):
     return actuation
 
 
-def create_actuation(observation_id, context_awareness_rule):
+def create_actuation(observation_id, context_awareness_rule_name):
     print(f"Sending POST to create an Actuation for ObservationID {observation_id} "
-          f"and ContextAwarenessRuleName {context_awareness_rule['name']}...")
+          f"and ContextAwarenessRuleName {context_awareness_rule_name}...")
     url = f"{BASE_URL}{ACTUATIONS_ENDPOINT_URL}"
     print(url)
 
     body = {
         "observation_id": observation_id,
-        "context_awareness_rule_name": context_awareness_rule["name"],
-        "time_start": utils.get_current_time(),
+        "context_awareness_rule_name": context_awareness_rule_name,
+        "time_start": None,
         "time_end": None
     }
     print(body)
@@ -146,14 +146,33 @@ def create_actuation(observation_id, context_awareness_rule):
     return actuation["id"]
 
 
-def update_actuation(actuation_id, actuation):
-    print(f"Sending PUT to update an Actuation for Actuation ID {actuation_id} ")
+def patch_actuation_start_time(actuation_id, actuation_start_time):
+    print(f"Sending PATCH to update START_TIME of an Actuation for Actuation ID {actuation_id} ")
     url = f"{BASE_URL}{ACTUATIONS_ENDPOINT_URL}{actuation_id}/"
     print(url)
 
-    print(actuation)
+    body = {
+        "time_start": actuation_start_time,
+    }
+    print(body)
 
-    r = requests.put(url, json=actuation)
+    r = requests.patch(url)
+    print(r.text)
+    actuation_id = json.loads(r.content)["data"]
+    print(actuation_id)
+
+
+def patch_actuation_end_time(actuation_id, actuation_end_time):
+    print(f"Sending PATCH to update END_TIME of an Actuation for Actuation ID {actuation_id} ")
+    url = f"{BASE_URL}{ACTUATIONS_ENDPOINT_URL}{actuation_id}/"
+    print(url)
+
+    body = {
+        "time_end": actuation_end_time,
+    }
+    print(body)
+
+    r = requests.patch(url)
     print(r.text)
     actuation_id = json.loads(r.content)["data"]
     print(actuation_id)

@@ -1,10 +1,12 @@
 import requests
 
 import connector_grovepi
+import utils
 from __init__ import IOTMA_SENSOR_NAME, URL_POST_ACTUATION_EDGE
 from core import get_context_awareness_rules as get_ca_rules_core, get_sensor, \
     get_observable_property, get_observation, create_actuation, \
-    context_awareness_rule_should_be_triggered_observation, post_sensor_observation
+    context_awareness_rule_should_be_triggered_observation, post_sensor_observation, \
+    patch_actuation_start_time
 
 context_awareness_rules = None
 
@@ -52,13 +54,15 @@ def read_sensor_information():
         context_awareness_rule = check_context_awareness_rules(observation_id)
 
         if context_awareness_rule is not None:
-            actuation_id = create_actuation(observation_id, context_awareness_rule)
+            actuation_id = create_actuation(observation_id, context_awareness_rule['name'])
 
+            actuation_start_time = utils.get_current_time()
             if context_awareness_rule["priority"]:
                 send_high_priority_actuation(actuation_id)
             else:
                 send_normal_priority_actuation(actuation_id)
 
+            patch_actuation_start_time(actuation_id, actuation_start_time)
     except IOError as error:
         print("Error")
         print(error)
@@ -70,9 +74,9 @@ def send_high_priority_actuation(actuation_id):
     print("Raise HIGH PRIORITY actuation")
 
     connector_grovepi.send_digital_value(RED_LED, 1)
-    requests.post(url=f"{URL_POST_ACTUATION_EDGE}/actuation", json={"trigger": True,
-                                                                    "origin_actuation":
-                                                                        actuation_id})
+    requests.post(url=f"{URL_POST_ACTUATION_EDGE}/actuation",
+                  json={"trigger": True,
+                        "origin_actuation": actuation_id})
 
 
 def send_normal_priority_actuation(actuation_id):
