@@ -204,6 +204,28 @@ paths:
           description: Invalid data content provided
       requestBody:
         $ref: '#/components/requestBodies/Actuation'
+    patch:
+      tags:
+        - actuation
+      summary: Update an instance
+      description: ''
+      operationId: patchActuation
+      parameters:
+        - in: path
+          name: actuation_id
+          description: ID of the instance to be modified
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Instance with the provided ID does already exist
+        '422':
+          description: Invalid data content provided
+      requestBody:
+        $ref: '#/components/requestBodies/Actuation'
     delete:
       tags:
         - actuation
@@ -1277,7 +1299,6 @@ components:
       required:
         - observation_id
         - context_awareness_rule_name
-        - time_start
       properties:
         observation_id:
           type: string

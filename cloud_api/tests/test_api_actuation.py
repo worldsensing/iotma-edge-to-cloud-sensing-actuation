@@ -134,7 +134,8 @@ def test_update_actuation(api_client, orm_client, create_observation, create_con
     assert orm_client.session.query(Actuation).count() == 0
     actuation_1 = ActuationFactory2DB(observation_id=test_input[0],
                                       context_awareness_rule_name=test_input[1],
-                                      time_start=test_input[2])
+                                      time_start=test_input[2],
+                                      time_end=test_input[3])
     assert orm_client.session.query(Actuation).count() == 1
 
     actuation_to_modify = ActuationDictFactory(observation_id=test_modify[0],
@@ -151,6 +152,51 @@ def test_update_actuation(api_client, orm_client, create_observation, create_con
     assert rv.status_code == 200
     response_content = json.loads(rv.data)['data']
     assert_actuations(response_content, actuation_to_modify)
+
+
+@pytest.mark.parametrize("test_input, test_modify_1, test_modify_2, test_modify_final", [
+    ([0, "Rule1", None, None],
+     ["2020-03-19T12:00:00+00:00"],
+     ["2020-03-19T12:00:00.100+00:00"],
+     [0, "Rule1", "2020-03-19T12:00:00+00:00", "2020-03-19T12:00:00.100+00:00"])
+])
+def test_patch_actuation(api_client, orm_client, create_observation, create_context_awareness_rule,
+                         test_input, test_modify_1, test_modify_2, test_modify_final):
+    assert orm_client.session.query(Actuation).count() == 0
+    actuation_1 = ActuationFactory2DB(observation_id=test_input[0],
+                                      context_awareness_rule_name=test_input[1],
+                                      time_start=test_input[2],
+                                      time_end=test_input[3])
+    assert orm_client.session.query(Actuation).count() == 1
+
+    actuation_to_modify = {
+        "time_start": test_modify_1[0]
+    }
+
+    rv = api_client.patch(f"/actuations/{actuation_1.id}",
+                          json=actuation_to_modify)
+    assert rv.status_code == 200
+    assert orm_client.session.query(Actuation).count() == 1
+
+    actuation_to_modify = {
+        "time_end": test_modify_2[0]
+    }
+
+    rv = api_client.patch(f"/actuations/{actuation_1.id}",
+                          json=actuation_to_modify)
+    assert rv.status_code == 200
+    assert orm_client.session.query(Actuation).count() == 1
+
+    rv = api_client.get(f"/actuations/{actuation_1.id}")
+    assert rv.status_code == 200
+    response_content = json.loads(rv.data)['data']
+
+    actuation_final = ActuationDictFactory(observation_id=test_modify_final[0],
+                                           context_awareness_rule_name=test_modify_final[1],
+                                           time_start=test_modify_final[2],
+                                           time_end=test_modify_final[3])
+
+    assert_actuations(response_content, actuation_final)
 
 
 @pytest.mark.parametrize("test_input", [
