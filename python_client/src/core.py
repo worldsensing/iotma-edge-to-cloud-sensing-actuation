@@ -156,7 +156,7 @@ def patch_actuation_start_time(actuation_id, actuation_start_time):
     }
     print(body)
 
-    r = requests.patch(url)
+    r = requests.patch(url, json=body)
     print(r.text)
     actuation_id = json.loads(r.content)["data"]
     print(actuation_id)
@@ -172,7 +172,7 @@ def patch_actuation_end_time(actuation_id, actuation_end_time):
     }
     print(body)
 
-    r = requests.patch(url)
+    r = requests.patch(url, json=body)
     print(r.text)
     actuation_id = json.loads(r.content)["data"]
     print(actuation_id)
