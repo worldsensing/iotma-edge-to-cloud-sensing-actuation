@@ -1,14 +1,11 @@
-import logging
-
 from flask_restful import reqparse
 
+from app import logger
 from errors.api_errors import GENERIC, NOT_EXISTS_ID, FIELD_NOT_VALID, EXISTS_ID
 from models import ActuatableProperty
 from resources import Resource, Response
 from translators import api_translators as translator
 from validators.api_validators import ActuatablePropertyValidator
-
-logger = logging.getLogger(__name__)
 
 actuatable_property_parser = reqparse.RequestParser()
 actuatable_property_parser.add_argument("name", type=str)
@@ -18,6 +15,7 @@ actuatable_property_parser.add_argument("feature_of_interest_name", type=str)
 class ActuatablePropertyHandler:
     class ActuatableProperties(Resource):
         def get(self):
+            logger.debug(f"[GET] /actuatable-properties/")
             response = self.repository.actuatable_property_repository. \
                 get_all_actuatable_properties()
 
@@ -26,6 +24,7 @@ class ActuatablePropertyHandler:
                  actuatable_property in response])
 
         def post(self):
+            logger.debug(f"[POST] /actuatable-properties/")
             args = actuatable_property_parser.parse_args()
 
             # Get ActuatableProperty arguments
@@ -63,6 +62,7 @@ class ActuatablePropertyHandler:
 
     class ActuatableProperty(Resource):
         def get(self, actuatable_property_name):
+            logger.debug(f"[GET] /actuatable-properties/{actuatable_property_name}")
             response = self.repository.actuatable_property_repository.get_actuatable_property(
                 actuatable_property_name)
 
@@ -71,6 +71,7 @@ class ActuatablePropertyHandler:
             return Response.error(NOT_EXISTS_ID)
 
         def put(self, actuatable_property_name):
+            logger.debug(f"[PUT] /actuatable-properties/{actuatable_property_name}")
             args = actuatable_property_parser.parse_args()
 
             response = self.repository.actuatable_property_repository.get_actuatable_property(
@@ -109,6 +110,7 @@ class ActuatablePropertyHandler:
             return Response.error(GENERIC)
 
         def delete(self, actuatable_property_name):
+            logger.debug(f"[DELETE] /actuatable-properties/{actuatable_property_name}")
             response = self.repository.actuatable_property_repository. \
                 get_actuatable_property(actuatable_property_name)
 

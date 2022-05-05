@@ -1,15 +1,12 @@
-import logging
-
 from flask_restful import reqparse
 
+from app import logger
 from errors.api_errors import GENERIC, NOT_EXISTS_ID, FIELD_NOT_VALID, EXISTS_ID
 from models import ObservableProperty
 from models.ObservableProperty import ObservableValueTypeEnum
 from resources import Resource, Response
 from translators import api_translators as translator
 from validators.api_validators import ObservablePropertyValidator
-
-logger = logging.getLogger(__name__)
 
 observable_property_parser = reqparse.RequestParser()
 observable_property_parser.add_argument("name", type=str)
@@ -20,6 +17,7 @@ observable_property_parser.add_argument("feature_of_interest_name", type=str)
 class ObservablePropertyHandler:
     class ObservableProperties(Resource):
         def get(self):
+            logger.debug(f"[GET] /observable-properties/")
             response = self.repository.observable_property_repository. \
                 get_all_observable_properties()
 
@@ -28,6 +26,7 @@ class ObservablePropertyHandler:
                  observable_property in response])
 
         def post(self):
+            logger.debug(f"[POST] /observable-properties/")
             args = observable_property_parser.parse_args()
 
             # Get ObservableProperty arguments
@@ -72,6 +71,7 @@ class ObservablePropertyHandler:
 
     class ObservableProperty(Resource):
         def get(self, observable_property_name):
+            logger.debug(f"[GET] /observable-properties/{observable_property_name}")
             response = self.repository.observable_property_repository. \
                 get_observable_property(observable_property_name)
 
@@ -80,6 +80,7 @@ class ObservablePropertyHandler:
             return Response.error(NOT_EXISTS_ID)
 
         def put(self, observable_property_name):
+            logger.debug(f"[PUT] /observable-properties/{observable_property_name}")
             args = observable_property_parser.parse_args()
 
             response = self.repository.observable_property_repository. \
@@ -125,6 +126,7 @@ class ObservablePropertyHandler:
             return Response.error(GENERIC)
 
         def delete(self, observable_property_name):
+            logger.debug(f"[DELETE] /observable-properties/{observable_property_name}")
             response = self.repository.observable_property_repository.get_observable_property(
                 observable_property_name)
 

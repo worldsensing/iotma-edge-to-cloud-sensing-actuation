@@ -15,4 +15,4 @@ def get_value_to_compare_from_context_awareness_rule(context_awareness_rule):
 
 
 def get_current_time():
-    return datetime.now().astimezone().strftime("%Y-%m-%dT%H:%M:%S%z")
+    return datetime.now().astimezone().strftime("%Y-%m-%dT%H:%M:%S.%f%z")

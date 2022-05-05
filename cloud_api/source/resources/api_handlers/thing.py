@@ -1,15 +1,12 @@
-import logging
-
 from flask_restful import reqparse
 
+from app import logger
 from errors.api_errors import GENERIC, NOT_EXISTS_ID, FIELD_NOT_VALID, NOT_THING_TYPE, \
     EXISTS_ID, NOT_EXISTS_LOCATION
 from models import Thing
 from resources import Resource, Response
 from translators import api_translators as translator
 from validators.api_validators import ThingValidator
-
-logger = logging.getLogger(__name__)
 
 thing_parser = reqparse.RequestParser()
 thing_parser.add_argument("name", type=str)
@@ -20,12 +17,14 @@ thing_parser.add_argument("location_name", type=str, required=False)
 class ThingHandler:
     class Things(Resource):
         def get(self):
+            logger.debug(f"[GET] /things/")
             response = self.repository.thing_repository.get_all_things()
 
             return Response.success(
                 [translator.thing_translator(thing) for thing in response])
 
         def post(self):
+            logger.debug(f"[POST] /things/")
             args = thing_parser.parse_args()
 
             # Get Thing arguments
@@ -66,6 +65,7 @@ class ThingHandler:
 
     class Thing(Resource):
         def get(self, thing_name):
+            logger.debug(f"[GET] /things/{thing_name}")
             response = self.repository.thing_repository.get_thing(thing_name)
 
             if response:
@@ -73,6 +73,7 @@ class ThingHandler:
             return Response.error(NOT_EXISTS_ID)
 
         def put(self, thing_name):
+            logger.debug(f"[PUT] /things/{thing_name}")
             args = thing_parser.parse_args()
 
             response = self.repository.thing_repository.get_thing(thing_name)
@@ -108,6 +109,7 @@ class ThingHandler:
             return Response.error(GENERIC)
 
         def delete(self, thing_name):
+            logger.debug(f"[DELETE] /things/{thing_name}")
             response = self.repository.thing_repository.get_thing(thing_name)
 
             if response is None:
@@ -120,6 +122,7 @@ class ThingHandler:
 
     class ThingObservation(Resource):
         def get(self, thing_name):
+            logger.debug(f"[GET] UNUSED")
             response = self.repository.thing_repository.get_thing(thing_name)
             if response is None:
                 return Response.error(NOT_EXISTS_ID)

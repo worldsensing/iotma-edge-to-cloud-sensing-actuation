@@ -14,7 +14,7 @@ class Actuation(Base):
     context_awareness_rule_name = Column(String(32),
                                          ForeignKey("context_awareness_rule.name",
                                                     ondelete="SET NULL"))
-    time_start = Column(DateTime(timezone=True), nullable=False)
+    time_start = Column(DateTime(timezone=True), nullable=True)
     time_end = Column(DateTime(timezone=True), nullable=True)
 
     actuators = relationship("ActuatorActuation", back_populates="actuation")
